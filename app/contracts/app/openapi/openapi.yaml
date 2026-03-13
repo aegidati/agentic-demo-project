@@ -1,0 +1,47 @@
+openapi: 3.1.0
+
+info:
+  title: API Contracts
+  version: "0.1.0"
+  description: Minimal API contract specification for full-stack projects
+  contact:
+    name: API Support
+
+servers:
+  - url: http://localhost:3000
+    description: Local development
+
+paths:
+  /health:
+    get:
+      summary: Health check endpoint
+      description: Returns the health status of the API
+      tags:
+        - Infrastructure
+      operationId: getHealth
+      responses:
+        '200':
+          description: Health status
+          content:
+            application/json:
+              schema:
+                $ref: ./schemas/HealthResponse.yaml
+
+components:
+  schemas:
+    HealthResponse:
+      $ref: ./schemas/HealthResponse.yaml
+    ErrorResponse:
+      $ref: ./schemas/ErrorResponse.yaml
+  securitySchemes:
+    BearerAuth:
+      type: http
+      scheme: bearer
+      description: JWT Bearer token (optional placeholder; configure your auth scheme)
+
+security:
+  - BearerAuth: []
+
+tags:
+  - name: Infrastructure
+    description: Infrastructure and diagnostic endpoints
