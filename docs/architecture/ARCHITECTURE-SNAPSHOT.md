@@ -1,74 +1,49 @@
 # Architecture Snapshot
 
-> This document is a **template**. In derived projects, populate it after selecting an architecture via a starter pack.
+## System Overview
 
-## Current Architecture
+This project is initialized from the `agentic-project-template` and assembled with official architecture starters.
 
-**Status**: Template (no architecture selected yet)
+Installed starter repositories:
 
-### Technology Stack
-| Layer | Technology | Version |
-|-------|-----------|---------|
-| **Language** | _TBD_ | _TBD_ |
-| **Framework** | _TBD_ | _TBD_ |
-| **Database** | _TBD_ | _TBD_ |
-| **Cache** | _TBD_ | _TBD_ |
-| **API Style** | _TBD_ | _TBD_ |
+- `agentic-clean-backend` in `app/backend`
+- `agentic-react-spa` in `app/web`
+- `agentic-api-contracts-api` in `app/contracts`
+- `agentic-postgres-dev` in `app/infra`
 
-### Directory Structure
+The project follows the feature lifecycle and governance flow defined in the template documentation.
+
+## Backend Layer
+
+The backend runtime is provided by `agentic-clean-backend` and installed in `app/backend`.
+This layer owns domain and application logic, plus backend-facing adapters and APIs.
+
+## Frontend Layer
+
+The web frontend is provided by `agentic-react-spa` and installed in `app/web`.
+This layer owns the browser client and UI workflows.
+
+## Contracts Layer
+
+The API contracts layer is provided by `agentic-api-contracts-api` and installed in `app/contracts`.
+This layer defines integration contracts between client and backend.
+
+## Infrastructure Layer
+
+The development infrastructure is provided by `agentic-postgres-dev` and installed in `app/infra`.
+This layer is optional but currently enabled for local data services.
+
+## High-Level Architecture Diagram
+
+```mermaid
+flowchart LR
+	U[User] --> W[Web Frontend\napp/web]
+	W --> C[API Contracts\napp/contracts]
+	C --> B[Backend\napp/backend]
+	B --> I[Infrastructure\napp/infra]
 ```
-app/
-├── (structure defined by chosen starter pack)
-└── (see STARTER-PACKS.md for details)
-```
 
-### Key Architectural Decisions
-- **Primary ADR**: See `docs/adr/ADR-001-ARCHITECTURE-STRATEGY.md`
-- **Additional ADRs**: Listed in [ADR-INDEX.md](../adr/ADR-INDEX.md)
+## Notes
 
-### Layering Model
-```
-(See ARCHITECTURE-REQUIREMENTS.md for standard layering)
-```
-
-### Data Model
-- **Database type**: _TBD_
-- **Schema location**: `app/migrations/` (placeholder)
-- **ORM / Query builder**: _TBD_
-
-### API Contracts
-- **API style**: _TBD_ (REST, GraphQL, etc.)
-- **Documentation**: _TBD_ (OpenAPI, GraphQL schema, etc.)
-- **Versioning strategy**: _TBD_
-
-### External Dependencies
-| Service | Purpose | Integration |
-|---------|---------|-------------|
-| (TBD) | (TBD) | (TBD) |
-
-### Deployment Model
-- **Platform**: _TBD_ (Cloud, Kubernetes, etc.)
-- **Scaling strategy**: _TBD_
-- **Configuration**: _TBD_
-
-### Testing Strategy
-- **Unit test framework**: _TBD_
-- **Integration test framework**: _TBD_
-- **Coverage target**: _TBD_
-
-### Observability
-- **Logging**: _TBD_
-- **Metrics**: _TBD_
-- **Tracing**: _TBD_
-
-## Conformance Checklist
-
-✓ Follows [ARCHITECTURE-REQUIREMENTS.md](./ARCHITECTURE-REQUIREMENTS.md)  
-✓ All ADRs documented in `docs/adr/`  
-✓ Starter pack installed and verified  
-✓ Project-specific customizations documented  
-
----
-
-**Last Updated**: (Update when architecture changes)  
-**Approved By**: (Tech Lead signature)
+- Primary architecture decision: `docs/adr/ADR-001-architecture-strategy.md`
+- Starter ownership and boundaries follow starter instructions under `.github/instructions/starters/`

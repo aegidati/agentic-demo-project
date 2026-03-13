@@ -1,0 +1,26 @@
+project:
+  template: agentic-project-template
+  template_version: 1.0
+  created: true
+
+starters:
+  backend: agentic-clean-backend
+  web: agentic-react-spa
+  client: none
+  contracts: agentic-api-contracts-api
+  infra: agentic-postgres-dev
+
+architecture:
+  adr_001_created: true
+  architecture_snapshot_created: true
+
+agents:
+  enabled:
+    - feature-orchestrator
+    - architecture-guardian
+    - documentation-guardian
+    - test-designer
+    - ux-navigator
+    - domain-template-agent
+    - starter-installer
+    - project-auditor
