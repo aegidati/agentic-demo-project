@@ -1,0 +1,24 @@
+project:
+  template_version: 1.0
+
+starters:
+  backend: null
+  web: null
+  client: null
+  contracts: null
+  infra: null
+
+architecture:
+  adr_001_created: false
+  architecture_snapshot_created: false
+
+agents:
+  enabled:
+    - feature-orchestrator
+    - architecture-guardian
+    - documentation-guardian
+    - test-designer
+    - ux-navigator
+    - domain-template
+    - starter-installer
+    - project-auditor
