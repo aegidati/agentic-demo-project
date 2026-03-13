@@ -1,0 +1,12 @@
+{
+  "name": "clean-backend",
+  "version": "0.1.0",
+  "description": "Clean Architecture backend starter (Node.js + TypeScript + Fastify + Vitest)",
+  "entry": "app",
+  "stack": {
+    "runtime": "node>=20",
+    "language": "typescript",
+    "http": "fastify",
+    "test": "vitest"
+  }
+}
