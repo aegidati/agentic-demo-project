@@ -1,0 +1,14 @@
+{
+  "name": "react-spa",
+  "version": "0.1.0",
+  "description": "React SPA starter (Vite + TypeScript + React Router + Vitest + RTL)",
+  "entry": "app",
+  "stack": {
+    "runtime": "node>=20",
+    "bundler": "vite",
+    "language": "typescript",
+    "framework": "react",
+    "router": "react-router-dom",
+    "test": "vitest+rtl"
+  }
+}
