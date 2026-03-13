@@ -1,0 +1,11 @@
+{
+  "name": "postgres-dev",
+  "version": "0.1.0",
+  "description": "Local PostgreSQL development database setup (Docker Compose)",
+  "entry": "app",
+  "stack": {
+    "database": "postgresql:16",
+    "containerization": "docker-compose",
+    "stack-agnostic": true
+  }
+}
