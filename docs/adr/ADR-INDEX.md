@@ -6,7 +6,7 @@ This document indexes all Architecture Decision Records (ADRs) for this project.
 
 | ID | Title | Status | Date | Related Docs |
 |----|-------|--------|------|--------------|
-| 001 | Architecture Strategy | _Template_ | (TBD in derived projects) | [ARCHITECTURE-SNAPSHOT.md](../architecture/ARCHITECTURE-SNAPSHOT.md) |
+| 001 | Architecture Strategy | Accepted | 2026-04-16 | [ADR-001-ARCHITECTURE-STRATEGY.md](./ADR-001-ARCHITECTURE-STRATEGY.md), [ARCHITECTURE-SNAPSHOT.md](../architecture/ARCHITECTURE-SNAPSHOT.md) |
 
 ---
 
