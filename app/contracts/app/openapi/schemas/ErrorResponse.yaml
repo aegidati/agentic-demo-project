@@ -1,0 +1,23 @@
+type: object
+required:
+  - type
+  - title
+  - status
+properties:
+  type:
+    type: string
+    description: Error type URI (RFC 7807 Problem Details)
+    example: "about:blank"
+  title:
+    type: string
+    description: Short human-readable summary
+    example: "Bad Request"
+  status:
+    type: integer
+    format: int32
+    description: HTTP status code
+    example: 400
+  detail:
+    type: string
+    description: Detailed explanation
+    default: null

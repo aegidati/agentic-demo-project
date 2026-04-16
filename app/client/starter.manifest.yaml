@@ -1,0 +1,43 @@
+id: agentic-react-native
+name: Agentic React Native
+version: 0.1.0
+type: frontend
+
+installsInto: app/client
+
+ownedPaths:
+  - app/client
+
+dependencies: []
+
+optionalDependencies:
+  - agentic-clean-backend
+  - agentic-api-contracts-api
+  - agentic-fullstack-composition
+
+provides:
+  - react-native-foundation
+  - expo-foundation
+  - mobile-client-bootstrap
+  - client-structure
+
+requires:
+  - node-runtime
+  - frontend-package-manager
+  - expo-cli
+
+postInstallChecks:
+  - dependencies install successfully
+  - build command runs (npx expo export --platform web)
+  - lint command runs
+  - type-check command runs
+  - test command runs
+  - dev command runs (npx expo start)
+
+tags:
+  - agentic
+  - starter
+  - frontend
+  - react-native
+  - mobile
+  - expo

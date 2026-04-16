@@ -1,0 +1,40 @@
+id: agentic-clean-backend
+name: Agentic Clean Backend
+version: 0.1.0
+type: backend
+installsInto: app/backend
+
+ownedPaths:
+  - app/backend
+
+dependencies: []
+
+optionalDependencies:
+  - agentic-api-contracts-api
+  - agentic-postgres-dev
+  - agentic-fullstack-composition
+
+provides:
+  - clean-architecture-backend
+  - domain-layer
+  - application-layer
+  - infrastructure-layer
+  - presentation-layer
+  - backend-bootstrap
+
+requires:
+  - python-runtime
+  - backend-package-manager
+
+postInstallChecks:
+  - backend dependencies install successfully
+  - backend project structure exists
+  - backend test command is executable
+  - backend application boot command is valid
+
+tags:
+  - agentic
+  - starter
+  - backend
+  - clean-architecture
+  - python
