@@ -1,0 +1,97 @@
+============================================================ 
+Validation launcher started: 16/04/2026 16:30:16,61 
+Repository root: C:\Users\a.egidati\Documents\Sviluppo\agentic-demo-project 
+============================================================ 
+============================================================
+Template Post-Install Validation
+Repository: C:\Users\a.egidati\Documents\Sviluppo\agentic-demo-project
+SkipNpmCiIfNodeModules: True
+KeepInfraUp: False
+============================================================
+[PASS] bootstrap-step-02 :: temp cleanup uses Test-Path -LiteralPath - Found Test-Path -LiteralPath
+[PASS] bootstrap-step-02 :: temp cleanup uses Remove-Item -LiteralPath - Found Remove-Item -LiteralPath
+[PASS] bootstrap-step-02 :: temp cleanup finally block - Found finally block with literal-path cleanup
+[PASS] bootstrap-step-02 :: non-destructive collision classification - Found SKIP collision=yes classification
+Bootstrap source detected: C:\Users\a.egidati\Documents\Sviluppo\agentic-demo-project\PROJECT-BOOTSTRAP.yaml
+[PASS] agentic-clean-backend :: Path exists - C:\Users\a.egidati\Documents\Sviluppo\agentic-demo-project\app\backend
+[PASS] agentic-clean-backend :: package.json - Found: C:\Users\a.egidati\Documents\Sviluppo\agentic-demo-project\app\backend\app\package.json
+[PASS] agentic-clean-backend :: node availability - node detected
+[PASS] agentic-clean-backend :: npm availability - npm detected
+[SKIP] agentic-clean-backend :: npm ci - Skipped due to -SkipNpmCiIfNodeModules and existing node_modules
+[PASS] agentic-clean-backend :: npm run build - Command succeeded: npm run build
+[PASS] agentic-clean-backend :: npm run test - Command succeeded: npm run test
+[PASS] agentic-clean-backend :: npm run smoke - Command succeeded: npm run smoke
+[SKIP] agentic-clean-backend :: npm run lint - Script not defined
+[SKIP] agentic-clean-backend :: npm run typecheck - Script not defined
+[SKIP] agentic-dotnet-backend :: starter selection/install state - Alternative starter in same slot not selected by resolved profile
+[PASS] agentic-react-spa :: Path exists - C:\Users\a.egidati\Documents\Sviluppo\agentic-demo-project\app\web
+[PASS] agentic-react-spa :: package.json - Found: C:\Users\a.egidati\Documents\Sviluppo\agentic-demo-project\app\web\app\package.json
+[PASS] agentic-react-spa :: node availability - node detected
+[PASS] agentic-react-spa :: npm availability - npm detected
+[PASS] agentic-react-spa :: starter metadata - Found: C:\Users\a.egidati\Documents\Sviluppo\agentic-demo-project\app\web\starter.manifest.yaml
+[PASS] agentic-react-spa :: web source directory - src directory found
+[PASS] agentic-react-spa :: web entrypoint - Found: C:\Users\a.egidati\Documents\Sviluppo\agentic-demo-project\app\web\app\src\main.tsx
+[PASS] agentic-react-spa :: web html host - Found: C:\Users\a.egidati\Documents\Sviluppo\agentic-demo-project\app\web\app\index.html
+[PASS] agentic-react-spa :: build prerequisites - Minimum web build structure detected
+[PASS] agentic-react-spa :: test artifacts - Found 18 test file(s)
+[SKIP] agentic-react-spa :: npm ci - Skipped due to -SkipNpmCiIfNodeModules and existing node_modules
+[PASS] agentic-react-spa :: npm run build - Command succeeded: npm run build
+[PASS] agentic-react-spa :: npm run test - Command succeeded: npm run test
+[SKIP] agentic-react-spa :: npm run smoke - Script not defined
+[SKIP] agentic-react-spa :: npm run lint - Script not defined
+[SKIP] agentic-react-spa :: npm run typecheck - Script not defined
+[SKIP] agentic-angular-spa :: starter selection/install state - Alternative starter in same slot not selected by resolved profile
+[SKIP] agentic-flutter-client :: starter selection/install state - Alternative starter in same slot not selected by resolved profile
+[PASS] agentic-react-native :: Path exists - C:\Users\a.egidati\Documents\Sviluppo\agentic-demo-project\app\client
+[PASS] agentic-react-native :: package.json - Found: C:\Users\a.egidati\Documents\Sviluppo\agentic-demo-project\app\client\app\package.json
+[PASS] agentic-react-native :: node availability - node detected
+[PASS] agentic-react-native :: npm availability - npm detected
+[PASS] agentic-react-native :: npm lockfile sync - Command succeeded: npm install --package-lock-only --ignore-scripts --no-audit --fund=false
+[PASS] agentic-react-native :: npm ci - Command succeeded: npm ci --no-audit --fund=false
+[PASS] agentic-react-native :: npm run build - Command succeeded: npm run build
+[PASS] agentic-react-native :: npm run test - Command succeeded: npm run test
+[SKIP] agentic-react-native :: npm run smoke - Script not defined
+[PASS] agentic-react-native :: npm run lint - Command succeeded: npm run lint
+[SKIP] agentic-react-native :: npm run typecheck - Script not defined
+[PASS] agentic-api-contracts-api :: Path exists - C:\Users\a.egidati\Documents\Sviluppo\agentic-demo-project\app\contracts
+[PASS] agentic-api-contracts-api :: OpenAPI spec discovery - Found 1 file(s)
+[PASS] agentic-api-contracts-api :: OpenAPI basic fallback validation - Found required openapi field in openapi.yaml
+[PASS] agentic-postgres-dev :: Path exists - C:\Users\a.egidati\Documents\Sviluppo\agentic-demo-project\app\infra
+[PASS] agentic-postgres-dev :: docker availability - docker detected
+[PASS] agentic-postgres-dev :: docker daemon - docker daemon reachable
+[PASS] agentic-postgres-dev :: compose file discovery - Found 1 file(s)
+[PASS] agentic-postgres-dev :: docker compose config: docker-compose.yml - Command succeeded: docker compose -f .\\app\infra\app\docker-compose.yml config -q
+[PASS] agentic-postgres-dev :: docker compose up -d - Command succeeded: docker compose -f .\\app\infra\app\docker-compose.yml up -d
+[PASS] agentic-postgres-dev :: docker compose ps - Command succeeded: docker compose -f .\\app\infra\app\docker-compose.yml ps
+[PASS] agentic-postgres-dev :: docker compose down - Command succeeded: docker compose -f .\\app\infra\app\docker-compose.yml down --remove-orphans
+[PASS] agentic-fullstack-composition :: Path exists - C:\Users\a.egidati\Documents\Sviluppo\agentic-demo-project\app\composition
+[PASS] agentic-fullstack-composition :: docker availability - docker detected
+[PASS] agentic-fullstack-composition :: docker daemon - docker daemon reachable
+[PASS] agentic-fullstack-composition :: compose file discovery - Found 1 file(s)
+[PASS] agentic-fullstack-composition :: docker compose config: docker-compose.yml - Command succeeded: docker compose -f .\\app\composition\app\docker-compose.yml config -q
+[SKIP] agentic-fullstack-composition :: compose lifecycle checks - Not enabled for this starter
+
+================== Per-Starter Summary (Applied Only) ================
+
+Starter                       PASS FAIL SKIP FinalStatus
+-------                       ---- ---- ---- -----------
+agentic-clean-backend            7    0    3 PASS       
+agentic-react-spa               12    0    4 PASS       
+agentic-react-native             9    0    2 PASS       
+agentic-api-contracts-api        3    0    0 PASS       
+agentic-postgres-dev             8    0    0 PASS       
+agentic-fullstack-composition    5    0    1 PASS       
+
+
+
+====================== Not Applicable Starters =======================
+- agentic-dotnet-backend
+- agentic-angular-spa
+- agentic-flutter-client
+
+======================== Actionable SKIP Checks ======================
+- agentic-fullstack-composition :: compose lifecycle checks -> Not enabled for this starter
+
+=========================== Overall Result ===========================
+PASS: 48  FAIL: 0  SKIP: 10
+OVERALL: PASS (no FAIL results)
