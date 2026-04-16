@@ -306,8 +306,8 @@ rules:
     - composition
 
 architecture:
-  adr_001_created: false
-  architecture_snapshot_created: false
+  adr_001_created: true
+  architecture_snapshot_created: true
 
 agents:
   enabled:
