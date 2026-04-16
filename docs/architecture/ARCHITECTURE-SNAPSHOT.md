@@ -1,74 +1,81 @@
 # Architecture Snapshot
 
-> This document is a **template**. In derived projects, populate it after selecting an architecture via a starter pack.
-
 ## Current Architecture
 
-**Status**: Template (no architecture selected yet)
+**Status**: Bootstrap baseline established
 
-### Technology Stack
-| Layer | Technology | Version |
-|-------|-----------|---------|
-| **Language** | _TBD_ | _TBD_ |
-| **Framework** | _TBD_ | _TBD_ |
-| **Database** | _TBD_ | _TBD_ |
-| **Cache** | _TBD_ | _TBD_ |
-| **API Style** | _TBD_ | _TBD_ |
+**Profile Source**: `fullstack-stack-react-native` from `PROJECT-BOOTSTRAP.yaml`
 
-### Directory Structure
-```
-app/
-├── (structure defined by chosen starter pack)
-└── (see STARTER-PACKS.md for details)
-```
+## Runtime Modules (Canonical Paths)
 
-### Key Architectural Decisions
-- **Primary ADR**: See `docs/adr/ADR-001-ARCHITECTURE-STRATEGY.md`
-- **Additional ADRs**: Listed in [ADR-INDEX.md](../adr/ADR-INDEX.md)
+Installed runtime modules are aligned to canonical paths and no alternative runtime paths are used.
 
-### Layering Model
-```
-(See ARCHITECTURE-REQUIREMENTS.md for standard layering)
-```
+| Slot | Starter | Canonical Path |
+|------|---------|----------------|
+| backend | agentic-clean-backend | `app/backend` |
+| web | agentic-react-spa | `app/web` |
+| client | agentic-react-native | `app/client` |
+| contracts | agentic-api-contracts-api | `app/contracts` |
+| infra | agentic-postgres-dev | `app/infra` |
+| composition | agentic-fullstack-composition | `app/composition` |
 
-### Data Model
-- **Database type**: _TBD_
-- **Schema location**: `app/migrations/` (placeholder)
-- **ORM / Query builder**: _TBD_
+## Optional Foundation Modules (Documentation-First)
 
-### API Contracts
-- **API style**: _TBD_ (REST, GraphQL, etc.)
-- **Documentation**: _TBD_ (OpenAPI, GraphQL schema, etc.)
-- **Versioning strategy**: _TBD_
+Foundation adoption is manual (copy/subtree-vendor model) and does not use runtime canonical `app/*` slots.
 
-### External Dependencies
-| Service | Purpose | Integration |
-|---------|---------|-------------|
-| (TBD) | (TBD) | (TBD) |
+| Foundation | Status | Locations |
+|------------|--------|-----------|
+| AGENTIC-IAM (`agentic-iam`) | adopted | `docs/domain-templates/IDENTITY-ACCESS/`, `docs/policies/`, `docs/starter/` |
+| AGENTIC-AUTH-FOUNDATION (`agentic-auth-foundation`) | adopted (with partial deferral) | `docs/domain-templates/AUTHENTICATION/`, `docs/profiles/` |
 
-### Deployment Model
-- **Platform**: _TBD_ (Cloud, Kubernetes, etc.)
-- **Scaling strategy**: _TBD_
-- **Configuration**: _TBD_
+Partial deferral currently tracked:
 
-### Testing Strategy
-- **Unit test framework**: _TBD_
-- **Integration test framework**: _TBD_
-- **Coverage target**: _TBD_
+- missing exact profile recipe file `docs/profiles/fullstack-stack-react-native.md`
+- temporary closest reference: `docs/profiles/fullstack-stack.md`
 
-### Observability
-- **Logging**: _TBD_
-- **Metrics**: _TBD_
-- **Tracing**: _TBD_
+## Architecture Decisions Baseline
+
+Primary decision source:
+
+- [ADR-001-ARCHITECTURE-STRATEGY.md](../adr/ADR-001-ARCHITECTURE-STRATEGY.md)
+
+Baseline decisions applied:
+
+- runtime composition follows the selected profile and canonical paths only
+- layering follows architecture requirements (presentation -> application -> domain -> infrastructure)
+- authentication and authorization are separated concerns
+- tenant-scoped authorization remains deny-by-default without valid tenant context and membership
+- unresolved authentication and IAM seed decisions are tracked for follow-up ADR promotion
+
+## Layering Model
+
+The project applies the standard layering model from [ARCHITECTURE-REQUIREMENTS.md](./ARCHITECTURE-REQUIREMENTS.md):
+
+1. Presentation/UI layer
+2. Application/Agent layer
+3. Domain/Business layer
+4. Persistence/Infrastructure layer
+
+## Data and Contracts (Bootstrap State)
+
+- contracts module is installed at `app/contracts`
+- infra module for development database baseline is installed at `app/infra`
+- concrete runtime schema and migration conventions are deferred to module implementation and feature lifecycle artifacts
+
+## Constraints and Deliberate Exclusions
+
+- no foundation assets may be moved into runtime canonical slots
+- no provider-specific production authentication wiring is finalized at bootstrap stage
+- no architecture deviations from canonical path mapping are allowed without a new ADR
 
 ## Conformance Checklist
 
-✓ Follows [ARCHITECTURE-REQUIREMENTS.md](./ARCHITECTURE-REQUIREMENTS.md)  
-✓ All ADRs documented in `docs/adr/`  
-✓ Starter pack installed and verified  
-✓ Project-specific customizations documented  
+✓ Aligned with [ARCHITECTURE-REQUIREMENTS.md](./ARCHITECTURE-REQUIREMENTS.md)
+✓ Aligned with [ADR-001-ARCHITECTURE-STRATEGY.md](../adr/ADR-001-ARCHITECTURE-STRATEGY.md)
+✓ Runtime modules mapped only to canonical paths
+✓ Optional foundations adopted in documentation-first mode (outside runtime slots)
 
 ---
 
-**Last Updated**: (Update when architecture changes)  
-**Approved By**: (Tech Lead signature)
+**Last Updated**: 2026-04-16
+**Approved By**: Bootstrap workflow baseline (pending final gate confirmation)
