@@ -4,14 +4,14 @@
 
 Provide a deterministic, execution-ready prompt sequence for delivering features
 in repositories derived from this template. Extends the First-Run Prompt Sequence
-(steps 00–09) with the repeatable feature delivery cycle (steps 10–16).
+(steps 00–09) with the repeatable feature delivery cycle (steps 10–18).
 
 ## When To Use
 
 Use this sequence for every feature after the repository bootstrap is complete
 (Final Gate, step 09, returned READY).
 
-## Ordered Sequence (10..16)
+## Ordered Sequence (10..18)
 
 | Step | File | Goal | Expected Output |
 |---|---|---|---|
@@ -22,16 +22,20 @@ Use this sequence for every feature after the repository bootstrap is complete
 | 14 (repeat) | [docs/platform/prompts/14-feature-implementation.prompt.md](prompts/14-feature-implementation.prompt.md) | Implement one increment (repeat per increment) | Increment done, tests pass, 03-IMPLEMENTATION-LOG.md updated |
 | 15 | [docs/platform/prompts/15-feature-review.prompt.md](prompts/15-feature-review.prompt.md) | Produce review artifact and verify Definition of Done | 04-REVIEW.md with DoD check and open risks |
 | 16 | [docs/platform/prompts/16-feature-done.prompt.md](prompts/16-feature-done.prompt.md) | Formally close the feature | 05-DONE.md, feature declared CLOSED, ADR-INDEX updated |
+| 17 | [docs/platform/prompts/17-context-restore.prompt.md](prompts/17-context-restore.prompt.md) | Restore lifecycle context and identify the next mandatory step | Current stage, completed/pending increments, blockers, recommended next prompt |
+| 18 (optional per increment) | [docs/platform/prompts/18-increment-completion-check.prompt.md](prompts/18-increment-completion-check.prompt.md) | Validate increment completeness before moving on | PASS/FAIL verdict with evidence checklist and remediation actions |
 
 ## How To Run
 
 1. Complete steps 00–09 (First-Run Prompt Sequence) before starting any feature.
-2. For each new feature, repeat steps 10–16 in order.
-3. Step 14 is the only repeating step: run it once per increment listed in 01-PLAN.md.
-4. Re-run step 13 (lifecycle gate) if scope changes significantly after the initial gate.
-5. Open each prompt file, copy the text under "Prompt To Run In Copilot Chat",
+2. For each new feature, run steps 10–16 as the core lifecycle sequence.
+3. Step 14 is the repeating implementation step: run it once per increment listed in 01-PLAN.md.
+4. Use step 18 after each run of step 14 to validate increment completion before starting the next increment.
+5. Re-run step 13 (lifecycle gate) if scope changes significantly after the initial gate.
+6. Use step 17 whenever work resumes after a pause or a new conversation starts.
+7. Open each prompt file, copy the text under "Prompt To Run In Copilot Chat",
    and run it in Copilot Chat in Agent mode.
-6. Confirm the corresponding done criteria before moving to the next step.
+8. Confirm the corresponding done criteria before moving to the next step.
 
 ## Execution Rules
 
@@ -40,8 +44,10 @@ Use this sequence for every feature after the repository bootstrap is complete
 3. Step 14 must be run separately for each increment — do not batch increments.
 4. Each run of step 14 must update 03-IMPLEMENTATION-LOG.md with a dedicated section.
 5. Steps 10–12 are run once per feature. Step 14 is run once per increment.
-6. Steps 15–16 are run once per feature, after all increments are complete.
-7. Do not close a feature (step 16) if 04-REVIEW.md has unresolved blockers.
+6. Step 18 should be run after each increment implementation (step 14) to confirm completeness.
+7. Steps 15–16 are run once per feature, after all increments are complete.
+8. Do not close a feature (step 16) if 04-REVIEW.md has unresolved blockers.
+9. Step 17 is a restoration utility step and does not replace any mandatory lifecycle gate.
 
 ## Context Restoration
 
@@ -50,7 +56,8 @@ on an in-progress feature.
 
 ### How To Restore Context
 
-1. Open docs/features/FEAT-XXXX-[NAME]/ and read:
+1. Resolve the feature folder from FEAT-XXXX using a unique match on
+  docs/features/FEAT-XXXX-* and read:
    - 00-REQUEST.md — to recall scope and acceptance criteria
    - 01-PLAN.md — to identify which increments are planned and their order
    - 02-TEST-STRATEGY.md — to recall test expectations and stop conditions
@@ -65,13 +72,16 @@ on an in-progress feature.
    - If all increments are done but 04-REVIEW.md is missing → resume from step 15
    - If 04-REVIEW.md exists but 05-DONE.md is missing → resume from step 16
 
-3. Run this prompt to get an instant status summary before resuming:
+3. Run step 17 to get an instant status summary before resuming:
 
-   @feature-orchestrator Leggi docs/features/FEAT-XXXX-[NAME]/ e produci un
-   context-restore summary con: feature ID, stage corrente nel lifecycle Agentic
-   (00-REQUEST / 01-PLAN / 02-TEST-STRATEGY / 03-IMPLEMENTATION / 04-REVIEW /
-   05-DONE), incrementi completati, incremento corrente, prossima azione raccomandata.
-   Indica il prossimo step della FEATURE-DELIVERY-SEQUENCE da eseguire.
+  @feature-orchestrator Chiedi solo il numero feature (XXXX). Risolvi
+  automaticamente la cartella con pattern docs/features/FEAT-XXXX-*.
+  Se il match non e univoco, fermati e chiedi chiarimento. Se il match e
+  univoco, produci un context-restore summary con: feature ID, stage corrente
+  nel lifecycle Agentic (00-REQUEST / 01-PLAN / 02-TEST-STRATEGY /
+  03-IMPLEMENTATION / 04-REVIEW / 05-DONE), incrementi completati,
+  incremento corrente, prossima azione raccomandata. Indica il prossimo step
+  della FEATURE-DELIVERY-SEQUENCE da eseguire.
 
 4. After receiving the summary, proceed from the identified step.
 
@@ -93,3 +103,4 @@ on an in-progress feature.
 3. 05-DONE.md declares the feature CLOSED.
 4. ADR-INDEX.md is up to date.
 5. No unresolved blockers remain in any lifecycle document.
+6. If step 18 was used, all increment checks are PASS or have tracked remediation closed before step 15.
