@@ -1,0 +1,14 @@
+type: object
+required:
+  - userId
+  - role
+  - status
+properties:
+  userId:
+    type: string
+    minLength: 1
+    example: user-002
+  role:
+    $ref: ./TenantRole.yaml
+  status:
+    $ref: ./MembershipStatus.yaml

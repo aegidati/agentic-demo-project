@@ -3,6 +3,7 @@ required:
   - type
   - title
   - status
+  - errorCode
 properties:
   type:
     type: string
@@ -17,7 +18,15 @@ properties:
     format: int32
     description: HTTP status code
     example: 400
+  errorCode:
+    type: string
+    description: Deterministic machine-readable error identifier.
+    example: membership.invalid_transition
   detail:
     type: string
     description: Detailed explanation
+    default: null
+  traceId:
+    type: string
+    description: Correlation id for diagnostics and audit tracing.
     default: null

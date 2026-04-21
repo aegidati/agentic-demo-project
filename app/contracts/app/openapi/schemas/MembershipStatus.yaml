@@ -1,0 +1,8 @@
+type: string
+description: Baseline tenant membership lifecycle states.
+enum:
+  - Invited
+  - Active
+  - Suspended
+  - Revoked
+example: Active

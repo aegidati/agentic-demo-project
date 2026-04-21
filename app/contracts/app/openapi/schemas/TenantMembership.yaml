@@ -1,0 +1,27 @@
+type: object
+required:
+  - tenantId
+  - userId
+  - role
+  - status
+  - createdAt
+  - updatedAt
+properties:
+  tenantId:
+    type: string
+    example: tenant-001
+  userId:
+    type: string
+    example: user-001
+  role:
+    $ref: ./TenantRole.yaml
+  status:
+    $ref: ./MembershipStatus.yaml
+  createdAt:
+    type: string
+    format: date-time
+    example: "2026-04-21T10:00:00Z"
+  updatedAt:
+    type: string
+    format: date-time
+    example: "2026-04-21T10:05:00Z"

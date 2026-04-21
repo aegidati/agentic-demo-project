@@ -27,12 +27,312 @@ paths:
               schema:
                 $ref: ./schemas/HealthResponse.yaml
 
+  /tenants/{tenantId}/memberships:
+    get:
+      summary: List memberships in tenant
+      description: Returns memberships for the selected tenant scope.
+      tags:
+        - IAM
+      operationId: listTenantMemberships
+      parameters:
+        - $ref: '#/components/parameters/TenantId'
+      responses:
+        '200':
+          description: Membership collection
+          content:
+            application/json:
+              schema:
+                $ref: ./schemas/MembershipListResponse.yaml
+        '401':
+          description: Missing or invalid authentication
+          content:
+            application/json:
+              schema:
+                $ref: ./schemas/ErrorResponse.yaml
+        '403':
+          description: Forbidden by tenant scope or role
+          content:
+            application/json:
+              schema:
+                $ref: ./schemas/ErrorResponse.yaml
+        '404':
+          description: Tenant not found in accessible scope
+          content:
+            application/json:
+              schema:
+                $ref: ./schemas/ErrorResponse.yaml
+
+    post:
+      summary: Create membership in tenant
+      description: Adds a user membership in the selected tenant.
+      tags:
+        - IAM
+      operationId: createTenantMembership
+      parameters:
+        - $ref: '#/components/parameters/TenantId'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: ./schemas/CreateMembershipRequest.yaml
+      responses:
+        '201':
+          description: Membership created
+          content:
+            application/json:
+              schema:
+                $ref: ./schemas/TenantMembership.yaml
+        '401':
+          description: Missing or invalid authentication
+          content:
+            application/json:
+              schema:
+                $ref: ./schemas/ErrorResponse.yaml
+        '403':
+          description: Forbidden by tenant scope or role
+          content:
+            application/json:
+              schema:
+                $ref: ./schemas/ErrorResponse.yaml
+        '404':
+          description: Tenant or user not found in accessible scope
+          content:
+            application/json:
+              schema:
+                $ref: ./schemas/ErrorResponse.yaml
+        '409':
+          description: Membership invariant conflict
+          content:
+            application/json:
+              schema:
+                $ref: ./schemas/ErrorResponse.yaml
+        '422':
+          description: Semantically invalid payload
+          content:
+            application/json:
+              schema:
+                $ref: ./schemas/ErrorResponse.yaml
+
+  /tenants/{tenantId}/memberships/{userId}:
+    get:
+      summary: Get tenant membership by user
+      description: Returns membership details for a user in tenant scope.
+      tags:
+        - IAM
+      operationId: getTenantMembership
+      parameters:
+        - $ref: '#/components/parameters/TenantId'
+        - $ref: '#/components/parameters/UserId'
+      responses:
+        '200':
+          description: Membership details
+          content:
+            application/json:
+              schema:
+                $ref: ./schemas/TenantMembership.yaml
+        '401':
+          description: Missing or invalid authentication
+          content:
+            application/json:
+              schema:
+                $ref: ./schemas/ErrorResponse.yaml
+        '403':
+          description: Forbidden by tenant scope or role
+          content:
+            application/json:
+              schema:
+                $ref: ./schemas/ErrorResponse.yaml
+        '404':
+          description: Membership not found in accessible scope
+          content:
+            application/json:
+              schema:
+                $ref: ./schemas/ErrorResponse.yaml
+
+    delete:
+      summary: Remove tenant membership
+      description: Removes user membership from selected tenant.
+      tags:
+        - IAM
+      operationId: deleteTenantMembership
+      parameters:
+        - $ref: '#/components/parameters/TenantId'
+        - $ref: '#/components/parameters/UserId'
+      responses:
+        '204':
+          description: Membership removed
+        '401':
+          description: Missing or invalid authentication
+          content:
+            application/json:
+              schema:
+                $ref: ./schemas/ErrorResponse.yaml
+        '403':
+          description: Forbidden by tenant scope or role
+          content:
+            application/json:
+              schema:
+                $ref: ./schemas/ErrorResponse.yaml
+        '404':
+          description: Membership not found in accessible scope
+          content:
+            application/json:
+              schema:
+                $ref: ./schemas/ErrorResponse.yaml
+        '409':
+          description: Membership invariant conflict
+          content:
+            application/json:
+              schema:
+                $ref: ./schemas/ErrorResponse.yaml
+
+  /tenants/{tenantId}/memberships/{userId}/status:
+    patch:
+      summary: Update membership status
+      description: Updates TenantMembership lifecycle state.
+      tags:
+        - IAM
+      operationId: updateTenantMembershipStatus
+      parameters:
+        - $ref: '#/components/parameters/TenantId'
+        - $ref: '#/components/parameters/UserId'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: ./schemas/UpdateMembershipStatusRequest.yaml
+      responses:
+        '200':
+          description: Membership status updated
+          content:
+            application/json:
+              schema:
+                $ref: ./schemas/TenantMembership.yaml
+        '401':
+          description: Missing or invalid authentication
+          content:
+            application/json:
+              schema:
+                $ref: ./schemas/ErrorResponse.yaml
+        '403':
+          description: Forbidden by tenant scope or role
+          content:
+            application/json:
+              schema:
+                $ref: ./schemas/ErrorResponse.yaml
+        '404':
+          description: Membership not found in accessible scope
+          content:
+            application/json:
+              schema:
+                $ref: ./schemas/ErrorResponse.yaml
+        '409':
+          description: Invalid membership transition or invariant conflict
+          content:
+            application/json:
+              schema:
+                $ref: ./schemas/ErrorResponse.yaml
+        '422':
+          description: Semantically invalid payload
+          content:
+            application/json:
+              schema:
+                $ref: ./schemas/ErrorResponse.yaml
+
+  /tenants/{tenantId}/memberships/{userId}/role:
+    patch:
+      summary: Update membership role
+      description: Updates TenantMembership role assignment.
+      tags:
+        - IAM
+      operationId: updateTenantMembershipRole
+      parameters:
+        - $ref: '#/components/parameters/TenantId'
+        - $ref: '#/components/parameters/UserId'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: ./schemas/UpdateMembershipRoleRequest.yaml
+      responses:
+        '200':
+          description: Membership role updated
+          content:
+            application/json:
+              schema:
+                $ref: ./schemas/TenantMembership.yaml
+        '401':
+          description: Missing or invalid authentication
+          content:
+            application/json:
+              schema:
+                $ref: ./schemas/ErrorResponse.yaml
+        '403':
+          description: Forbidden by tenant scope or role
+          content:
+            application/json:
+              schema:
+                $ref: ./schemas/ErrorResponse.yaml
+        '404':
+          description: Membership not found in accessible scope
+          content:
+            application/json:
+              schema:
+                $ref: ./schemas/ErrorResponse.yaml
+        '409':
+          description: Role invariant conflict
+          content:
+            application/json:
+              schema:
+                $ref: ./schemas/ErrorResponse.yaml
+        '422':
+          description: Semantically invalid payload
+          content:
+            application/json:
+              schema:
+                $ref: ./schemas/ErrorResponse.yaml
+
 components:
+  parameters:
+    TenantId:
+      name: tenantId
+      in: path
+      required: true
+      description: Tenant identifier in current authorization scope.
+      schema:
+        type: string
+        minLength: 1
+    UserId:
+      name: userId
+      in: path
+      required: true
+      description: User identifier inside tenant membership scope.
+      schema:
+        type: string
+        minLength: 1
+
   schemas:
     HealthResponse:
       $ref: ./schemas/HealthResponse.yaml
     ErrorResponse:
       $ref: ./schemas/ErrorResponse.yaml
+    TenantRole:
+      $ref: ./schemas/TenantRole.yaml
+    MembershipStatus:
+      $ref: ./schemas/MembershipStatus.yaml
+    TenantMembership:
+      $ref: ./schemas/TenantMembership.yaml
+    MembershipListResponse:
+      $ref: ./schemas/MembershipListResponse.yaml
+    CreateMembershipRequest:
+      $ref: ./schemas/CreateMembershipRequest.yaml
+    UpdateMembershipStatusRequest:
+      $ref: ./schemas/UpdateMembershipStatusRequest.yaml
+    UpdateMembershipRoleRequest:
+      $ref: ./schemas/UpdateMembershipRoleRequest.yaml
   securitySchemes:
     BearerAuth:
       type: http
@@ -45,3 +345,5 @@ security:
 tags:
   - name: Infrastructure
     description: Infrastructure and diagnostic endpoints
+  - name: IAM
+    description: Tenant membership and role governance endpoints

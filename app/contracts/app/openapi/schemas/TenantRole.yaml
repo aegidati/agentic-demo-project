@@ -1,0 +1,8 @@
+type: string
+description: Baseline tenant role values.
+enum:
+  - Owner
+  - Admin
+  - Member
+  - Viewer
+example: Member

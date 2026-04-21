@@ -7,13 +7,66 @@ exports.buildApp = buildApp;
 exports.startServer = startServer;
 const fastify_1 = __importDefault(require("fastify"));
 const get_health_status_use_case_1 = require("./application/use-cases/get-health-status.use-case");
+const membership_governance_use_case_1 = require("./application/use-cases/iam/membership-governance.use-case");
 const in_memory_health_check_adapter_1 = require("./infrastructure/health/in-memory-health-check.adapter");
+const default_tenant_context_resolver_adapter_1 = require("./infrastructure/iam/default-tenant-context-resolver.adapter");
+const in_memory_global_user_status_reader_adapter_1 = require("./infrastructure/iam/in-memory-global-user-status-reader.adapter");
+const in_memory_tenant_membership_repository_adapter_1 = require("./infrastructure/iam/in-memory-tenant-membership-repository.adapter");
 const health_routes_1 = require("./presentation/http/routes/health.routes");
+const iam_memberships_routes_1 = require("./presentation/http/routes/iam-memberships.routes");
 function buildApp() {
     const app = (0, fastify_1.default)({ logger: true });
     const healthCheckAdapter = new in_memory_health_check_adapter_1.InMemoryHealthCheckAdapter();
     const getHealthStatusUseCase = new get_health_status_use_case_1.GetHealthStatusUseCase(healthCheckAdapter);
+    const tenantContextResolver = new default_tenant_context_resolver_adapter_1.DefaultTenantContextResolverAdapter();
+    const membershipSeed = [
+        {
+            tenantId: 'tenant-001',
+            userId: 'owner-001',
+            role: 'Owner',
+            status: 'Active',
+            createdAt: new Date('2026-04-21T08:00:00.000Z'),
+            updatedAt: new Date('2026-04-21T08:00:00.000Z')
+        },
+        {
+            tenantId: 'tenant-001',
+            userId: 'member-001',
+            role: 'Member',
+            status: 'Active',
+            createdAt: new Date('2026-04-21T08:00:00.000Z'),
+            updatedAt: new Date('2026-04-21T08:00:00.000Z')
+        },
+        {
+            tenantId: 'tenant-002',
+            userId: 'owner-002',
+            role: 'Owner',
+            status: 'Active',
+            createdAt: new Date('2026-04-21T08:00:00.000Z'),
+            updatedAt: new Date('2026-04-21T08:00:00.000Z')
+        },
+        {
+            tenantId: 'tenant-001',
+            userId: 'disabled-001',
+            role: 'Admin',
+            status: 'Active',
+            createdAt: new Date('2026-04-21T08:00:00.000Z'),
+            updatedAt: new Date('2026-04-21T08:00:00.000Z')
+        }
+    ];
+    const globalUserSeed = [
+        { userId: 'owner-001', globalStatus: 'Active' },
+        { userId: 'member-001', globalStatus: 'Active' },
+        { userId: 'owner-002', globalStatus: 'Active' },
+        { userId: 'disabled-001', globalStatus: 'Disabled' }
+    ];
+    const membershipRepository = new in_memory_tenant_membership_repository_adapter_1.InMemoryTenantMembershipRepositoryAdapter(membershipSeed);
+    const globalUserStatusReader = new in_memory_global_user_status_reader_adapter_1.InMemoryGlobalUserStatusReaderAdapter(globalUserSeed);
+    const membershipGovernanceUseCase = new membership_governance_use_case_1.MembershipGovernanceUseCase(membershipRepository, globalUserStatusReader);
     (0, health_routes_1.registerHealthRoutes)(app, { getHealthStatusUseCase });
+    (0, iam_memberships_routes_1.registerIamMembershipRoutes)(app, {
+        membershipGovernanceUseCase,
+        tenantContextResolver
+    });
     return app;
 }
 async function startServer() {
