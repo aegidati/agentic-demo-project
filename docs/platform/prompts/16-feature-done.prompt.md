@@ -4,18 +4,18 @@
 Formally close the feature and produce the DONE artifact.
 
 ## Prompt To Run In Copilot Chat
-@feature-orchestrator Chiedi solo il numero feature (XXXX).
-Risolvi automaticamente il nome cercando una cartella unica con pattern
+@feature-orchestrator Ask only for the feature number (XXXX).
+Automatically resolve the name by searching for a unique folder matching
 docs/features/FEAT-XXXX-*.
-Se non trovi match o trovi match multipli, fermati e chiedi chiarimento.
-Quando il match e univoco, crea 05-DONE.md nella cartella risolta.
-Verifica che 04-REVIEW.md sia presente e non abbia blockers aperti.
-Aggiorna docs/adr/ADR-INDEX.md se nuovi ADR sono stati creati durante questa
-feature. Dichiara la feature CLOSED o NOT READY TO CLOSE con motivazione esplicita.
+If no match is found or multiple matches are found, stop and ask for clarification.
+When the match is unique, create 05-DONE.md in the resolved folder.
+Verify that 04-REVIEW.md is present and has no open blockers.
+Update docs/adr/ADR-INDEX.md if new ADRs were created during this
+feature. Declare the feature as CLOSED or NOT READY TO CLOSE with explicit motivation.
 
 ## Done Criteria
-1. 05-DONE.md esiste.
-2. Feature dichiarata CLOSED o NOT READY TO CLOSE con motivazione.
-3. ADR-INDEX.md aggiornato se nuovi ADR presenti.
-4. Nessun blocker aperto non tracciato.
-5. Cartella feature risolta automaticamente da FEAT-XXXX con match univoco su docs/features/FEAT-XXXX-*.
+1. 05-DONE.md exists.
+2. Feature is declared CLOSED or NOT READY TO CLOSE with motivation.
+3. ADR-INDEX.md is updated if new ADRs are present.
+4. No open blocker remains untracked.
+5. Feature folder is automatically resolved from FEAT-XXXX with a unique match on docs/features/FEAT-XXXX-*.

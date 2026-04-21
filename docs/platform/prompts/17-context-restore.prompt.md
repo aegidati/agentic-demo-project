@@ -5,30 +5,30 @@ Restore feature lifecycle status after a pause and identify the single next mand
 
 ## Prompt To Run In Copilot Chat
 @feature-orchestrator
-Chiedi solo il numero feature (XXXX).
-Risolvi automaticamente il nome cercando una cartella unica con pattern
+Ask only for the feature number (XXXX).
+Automatically resolve the name by searching for a unique folder matching
 docs/features/FEAT-XXXX-*.
-Se non trovi match o trovi match multipli, fermati e chiedi chiarimento.
-Quando il match e univoco, leggi 00-REQUEST.md, 01-PLAN.md,
-02-TEST-STRATEGY.md, 03-IMPLEMENTATION-LOG.md (se presente), 04-REVIEW.md
-(se presente), 05-DONE.md (se presente), piu eventuali ADR referenziati.
-Produci un context-restore summary con:
-- feature ID e feature name
-- stage corrente (00-REQUEST, 01-PLAN, 02-TEST-STRATEGY, 03-IMPLEMENTATION, 04-REVIEW, 05-DONE)
-- incrementi completati vs incrementi pianificati
-- incremento corrente (se in implementazione)
-- blockers aperti con severita
-- prossimo step obbligatorio della FEATURE-DELIVERY-SEQUENCE
-- prompt consigliato da eseguire subito (10/11/12/13/14/15/16/17/18)
+If no match is found or multiple matches are found, stop and ask for clarification.
+When the match is unique, read 00-REQUEST.md, 01-PLAN.md,
+02-TEST-STRATEGY.md, 03-IMPLEMENTATION-LOG.md (if present), 04-REVIEW.md
+(if present), 05-DONE.md (if present), plus any referenced ADRs.
+Produce a context-restore summary including:
+- feature ID and feature name
+- current stage (00-REQUEST, 01-PLAN, 02-TEST-STRATEGY, 03-IMPLEMENTATION, 04-REVIEW, 05-DONE)
+- completed increments vs planned increments
+- current increment (if in implementation)
+- open blockers with severity
+- next mandatory step in FEATURE-DELIVERY-SEQUENCE
+- recommended prompt to run next (10/11/12/13/14/15/16/17/18)
 
-Applica le regole:
-- non considerare completato un incremento senza evidenza in 03-IMPLEMENTATION-LOG.md
-- se mancano prerequisiti di stage, segnala transizione non valida
-- se 04-REVIEW.md contiene blocker aperti, vieta la chiusura in 05-DONE
+Apply these rules:
+- do not consider an increment complete without evidence in 03-IMPLEMENTATION-LOG.md
+- if stage prerequisites are missing, report invalid transition
+- if 04-REVIEW.md contains open blockers, do not allow closure in 05-DONE
 
 ## Done Criteria
-1. Stage corrente identificato in modo esplicito.
-2. Prossimo step obbligatorio indicato in modo univoco.
-3. Blockers e gap documentali elencati con azione richiesta.
-4. Prompt successivo raccomandato pronto per esecuzione.
-5. Cartella feature risolta automaticamente da FEAT-XXXX con match univoco su docs/features/FEAT-XXXX-*.
+1. Current stage is identified explicitly.
+2. Next mandatory step is indicated unambiguously.
+3. Blockers and documentation gaps are listed with required action.
+4. Next recommended prompt is ready to execute.
+5. Feature folder is automatically resolved from FEAT-XXXX with a unique match on docs/features/FEAT-XXXX-*.

@@ -4,18 +4,18 @@
 Produce the review artifact and check Definition of Done before closing.
 
 ## Prompt To Run In Copilot Chat
-@feature-orchestrator Chiedi solo il numero feature (XXXX).
-Risolvi automaticamente il nome cercando una cartella unica con pattern
+@feature-orchestrator Ask only for the feature number (XXXX).
+Automatically resolve the name by searching for a unique folder matching
 docs/features/FEAT-XXXX-*.
-Se non trovi match o trovi match multipli, fermati e chiedi chiarimento.
-Quando il match e univoco, crea 04-REVIEW.md nella cartella risolta.
-Verifica tutti gli incrementi in 03-IMPLEMENTATION-LOG.md, controlla alignment
-con gli ADR referenziati, valida contro docs/governance/DEFINITION-OF-DONE.md.
-Elenca: cosa e done, open risks, recommended next actions.
+If no match is found or multiple matches are found, stop and ask for clarification.
+When the match is unique, create 04-REVIEW.md in the resolved folder.
+Verify all increments in 03-IMPLEMENTATION-LOG.md, check alignment with
+referenced ADRs, validate against docs/governance/DEFINITION-OF-DONE.md.
+List: what is done, open risks, recommended next actions.
 
 ## Done Criteria
-1. 04-REVIEW.md esiste.
-2. Contiene verifica esplicita di ogni criterio in DEFINITION-OF-DONE.md.
-3. Open risks elencati con priorità.
-4. Recommended next actions presenti.
-5. Cartella feature risolta automaticamente da FEAT-XXXX con match univoco su docs/features/FEAT-XXXX-*.
+1. 04-REVIEW.md exists.
+2. It contains explicit verification of each criterion in DEFINITION-OF-DONE.md.
+3. Open risks are listed with priority.
+4. Recommended next actions are present.
+5. Feature folder is automatically resolved from FEAT-XXXX with a unique match on docs/features/FEAT-XXXX-*.

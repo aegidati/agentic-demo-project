@@ -5,34 +5,34 @@ Validate whether one implementation increment is truly complete against plan, te
 
 ## Prompt To Run In Copilot Chat
 @feature-lifecycle-agent
-Chiedi:
-- numero feature (XXXX)
+Ask for:
+- feature number (XXXX)
 - INCREMENT-ID
-Risolvi automaticamente il nome cercando una cartella unica con pattern
+Automatically resolve the name by searching for a unique folder matching
 docs/features/FEAT-XXXX-*.
-Se non trovi match o trovi match multipli, fermati e chiedi chiarimento.
-Quando il match e univoco, valida il completamento dell'incremento
-[INCREMENT-ID] nella feature risolta. Leggi:
-- 01-PLAN.md (scope e output attesi dell'incremento)
-- 02-TEST-STRATEGY.md (test richiesti, edge cases, stop conditions)
-- sezione corrispondente in 03-IMPLEMENTATION-LOG.md
-- eventuali ADR referenziati nel piano
+If no match is found or multiple matches are found, stop and ask for clarification.
+When the match is unique, validate completion of increment
+[INCREMENT-ID] in the resolved feature. Read:
+- 01-PLAN.md (increment scope and expected outputs)
+- 02-TEST-STRATEGY.md (required tests, edge cases, stop conditions)
+- corresponding section in 03-IMPLEMENTATION-LOG.md
+- any ADRs referenced in the plan
 
-Restituisci verdict PASS o FAIL con:
-- evidence checklist: scope realizzato, allineamento ADR, test evidence, rischi aperti
-- mismatch tra piano e implementazione
-- test/edge cases mancanti
-- azioni minime di remediation per arrivare a PASS
-- decisione finale: READY FOR NEXT INCREMENT oppure NOT READY
+Return PASS or FAIL verdict with:
+- evidence checklist: implemented scope, ADR alignment, test evidence, open risks
+- mismatches between plan and implementation
+- missing tests/edge cases
+- minimum remediation actions to reach PASS
+- final decision: READY FOR NEXT INCREMENT or NOT READY
 
-Regole:
-- FAIL automatico se manca evidenza test esplicita
-- FAIL automatico se c'e violazione di boundary architetturale
-- FAIL automatico se scope dell'incremento e parziale senza giustificazione approvata
+Rules:
+- automatic FAIL if explicit test evidence is missing
+- automatic FAIL if an architectural boundary violation exists
+- automatic FAIL if increment scope is partial without approved justification
 
 ## Done Criteria
-1. Verdict PASS/FAIL esplicito e motivato.
-2. Checklist di evidenze compilata.
-3. Gap e remediation minime chiaramente elencati.
-4. Decisione READY FOR NEXT INCREMENT o NOT READY dichiarata esplicitamente.
-5. Cartella feature risolta automaticamente da FEAT-XXXX con match univoco su docs/features/FEAT-XXXX-*.
+1. PASS/FAIL verdict is explicit and justified.
+2. Evidence checklist is completed.
+3. Gaps and minimum remediation are clearly listed.
+4. Decision READY FOR NEXT INCREMENT or NOT READY is declared explicitly.
+5. Feature folder is automatically resolved from FEAT-XXXX with a unique match on docs/features/FEAT-XXXX-*.

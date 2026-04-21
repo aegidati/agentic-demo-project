@@ -4,16 +4,16 @@
 Define the test strategy before any implementation starts.
 
 ## Prompt To Run In Copilot Chat
-@test-designer Chiedi solo il numero feature (XXXX).
-Risolvi automaticamente il nome cercando una cartella unica con pattern
+@test-designer Ask only for the feature number (XXXX).
+Automatically resolve the name by searching for a unique folder matching
 docs/features/FEAT-XXXX-*.
-Se non trovi match o trovi match multipli, fermati e chiedi chiarimento.
-Quando il match e univoco, leggi 00-REQUEST.md e 01-PLAN.md della cartella
-risolta e crea 02-TEST-STRATEGY.md con: test scope, unit/integration/e2e split,
-coverage targets, stop conditions, edge cases da coprire.
+If no match is found or multiple matches are found, stop and ask for clarification.
+When the match is unique, read 00-REQUEST.md and 01-PLAN.md in the resolved folder
+and create 02-TEST-STRATEGY.md with: test scope, unit/integration/e2e split,
+coverage targets, stop conditions, edge cases to cover.
 
 ## Done Criteria
-1. 02-TEST-STRATEGY.md esiste.
-2. Contiene: scope, test types, coverage targets, stop conditions.
-3. Edge cases esplicitati per ogni incremento del piano.
-4. Cartella feature risolta automaticamente da FEAT-XXXX con match univoco su docs/features/FEAT-XXXX-*.
+1. 02-TEST-STRATEGY.md exists.
+2. It contains: scope, test types, coverage targets, stop conditions.
+3. Edge cases are explicitly defined for each plan increment.
+4. Feature folder is automatically resolved from FEAT-XXXX with a unique match on docs/features/FEAT-XXXX-*.
