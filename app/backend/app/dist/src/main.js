@@ -3,18 +3,34 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
+exports.resolveAuditEventWriterFromEnv = resolveAuditEventWriterFromEnv;
 exports.buildApp = buildApp;
 exports.startServer = startServer;
 const fastify_1 = __importDefault(require("fastify"));
 const get_health_status_use_case_1 = require("./application/use-cases/get-health-status.use-case");
 const membership_governance_use_case_1 = require("./application/use-cases/iam/membership-governance.use-case");
+const file_audit_event_writer_adapter_1 = require("./infrastructure/iam/file-audit-event-writer.adapter");
+const in_memory_audit_event_writer_adapter_1 = require("./infrastructure/iam/in-memory-audit-event-writer.adapter");
+const in_memory_authorization_decision_logger_adapter_1 = require("./infrastructure/iam/in-memory-authorization-decision-logger.adapter");
 const in_memory_health_check_adapter_1 = require("./infrastructure/health/in-memory-health-check.adapter");
 const default_tenant_context_resolver_adapter_1 = require("./infrastructure/iam/default-tenant-context-resolver.adapter");
 const in_memory_global_user_status_reader_adapter_1 = require("./infrastructure/iam/in-memory-global-user-status-reader.adapter");
 const in_memory_tenant_membership_repository_adapter_1 = require("./infrastructure/iam/in-memory-tenant-membership-repository.adapter");
 const health_routes_1 = require("./presentation/http/routes/health.routes");
 const iam_memberships_routes_1 = require("./presentation/http/routes/iam-memberships.routes");
-function buildApp() {
+function resolveAuditEventWriterFromEnv() {
+    const sink = (process.env.IAM_AUDIT_SINK ?? 'in-memory').toLowerCase();
+    if (sink === 'file') {
+        const retentionDays = Number(process.env.IAM_AUDIT_RETENTION_DAYS ?? '365');
+        const filePath = process.env.IAM_AUDIT_FILE_PATH ?? './var/audit-events.ndjson';
+        return new file_audit_event_writer_adapter_1.FileAuditEventWriterAdapter({
+            filePath,
+            retentionDays: Number.isFinite(retentionDays) ? retentionDays : 365
+        });
+    }
+    return new in_memory_audit_event_writer_adapter_1.InMemoryAuditEventWriterAdapter();
+}
+function buildApp(overrides = {}) {
     const app = (0, fastify_1.default)({ logger: true });
     const healthCheckAdapter = new in_memory_health_check_adapter_1.InMemoryHealthCheckAdapter();
     const getHealthStatusUseCase = new get_health_status_use_case_1.GetHealthStatusUseCase(healthCheckAdapter);
@@ -61,7 +77,9 @@ function buildApp() {
     ];
     const membershipRepository = new in_memory_tenant_membership_repository_adapter_1.InMemoryTenantMembershipRepositoryAdapter(membershipSeed);
     const globalUserStatusReader = new in_memory_global_user_status_reader_adapter_1.InMemoryGlobalUserStatusReaderAdapter(globalUserSeed);
-    const membershipGovernanceUseCase = new membership_governance_use_case_1.MembershipGovernanceUseCase(membershipRepository, globalUserStatusReader);
+    const auditEventWriter = overrides.auditEventWriter ?? resolveAuditEventWriterFromEnv();
+    const decisionLogger = overrides.decisionLogger ?? new in_memory_authorization_decision_logger_adapter_1.InMemoryAuthorizationDecisionLoggerAdapter();
+    const membershipGovernanceUseCase = new membership_governance_use_case_1.MembershipGovernanceUseCase(membershipRepository, globalUserStatusReader, auditEventWriter, decisionLogger);
     (0, health_routes_1.registerHealthRoutes)(app, { getHealthStatusUseCase });
     (0, iam_memberships_routes_1.registerIamMembershipRoutes)(app, {
         membershipGovernanceUseCase,

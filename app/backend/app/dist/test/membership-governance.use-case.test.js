@@ -2,12 +2,16 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 const vitest_1 = require("vitest");
 const membership_governance_use_case_1 = require("../src/application/use-cases/iam/membership-governance.use-case");
+const in_memory_audit_event_writer_adapter_1 = require("../src/infrastructure/iam/in-memory-audit-event-writer.adapter");
+const in_memory_authorization_decision_logger_adapter_1 = require("../src/infrastructure/iam/in-memory-authorization-decision-logger.adapter");
 const in_memory_global_user_status_reader_adapter_1 = require("../src/infrastructure/iam/in-memory-global-user-status-reader.adapter");
 const in_memory_tenant_membership_repository_adapter_1 = require("../src/infrastructure/iam/in-memory-tenant-membership-repository.adapter");
-function createUseCase(seedMemberships, globalUsers) {
+function createUseCase(seedMemberships, globalUsers, overrides) {
     const repository = new in_memory_tenant_membership_repository_adapter_1.InMemoryTenantMembershipRepositoryAdapter(seedMemberships);
     const globalReader = new in_memory_global_user_status_reader_adapter_1.InMemoryGlobalUserStatusReaderAdapter(globalUsers);
-    const useCase = new membership_governance_use_case_1.MembershipGovernanceUseCase(repository, globalReader);
+    const auditWriter = overrides?.auditWriter ?? new in_memory_audit_event_writer_adapter_1.InMemoryAuditEventWriterAdapter();
+    const decisionLogger = new in_memory_authorization_decision_logger_adapter_1.InMemoryAuthorizationDecisionLoggerAdapter();
+    const useCase = new membership_governance_use_case_1.MembershipGovernanceUseCase(repository, globalReader, auditWriter, decisionLogger);
     return { useCase, repository };
 }
 function buildMembership(tenantId, userId, role, status) {
@@ -76,5 +80,27 @@ function buildMembership(tenantId, userId, role, status) {
         const memberships = await repository.listByTenantId('tenant-001');
         const activeOwners = memberships.filter((m) => m.status === 'Active' && m.role === 'Owner');
         (0, vitest_1.expect)(activeOwners).toHaveLength(1);
+    });
+    (0, vitest_1.it)('rolls back role mutation when audit append fails', async () => {
+        const failingAuditWriter = {
+            append: async () => {
+                throw new Error('audit store unavailable');
+            }
+        };
+        const { useCase, repository } = createUseCase([
+            buildMembership('tenant-001', 'owner-001', 'Owner', 'Active'),
+            buildMembership('tenant-001', 'member-001', 'Member', 'Active')
+        ], [
+            { userId: 'owner-001', globalStatus: 'Active' },
+            { userId: 'member-001', globalStatus: 'Active' }
+        ], {
+            auditWriter: failingAuditWriter
+        });
+        await (0, vitest_1.expect)(useCase.updateRole('tenant-001', 'owner-001', 'member-001', 'Viewer')).rejects.toThrow('audit store unavailable');
+        const member = await repository.findByIdentity({
+            tenantId: 'tenant-001',
+            userId: 'member-001'
+        });
+        (0, vitest_1.expect)(member?.role).toBe('Member');
     });
 });

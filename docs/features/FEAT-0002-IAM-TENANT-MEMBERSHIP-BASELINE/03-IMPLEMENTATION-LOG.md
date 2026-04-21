@@ -221,3 +221,217 @@ Executed checks:
 INC-02 status: COMPLETE
 
 Next recommended increment: INC-03 (Governance Audit and Composition Wiring)
+
+---
+
+## Increment: INC-03 - Governance Audit and Composition Wiring
+
+### Scope
+Implemented the INC-03 baseline defined in 01-PLAN.md:
+- Audit event emission for membership and role mutations.
+- Append-only audit persistence with file-backed sink option and retention enforcement.
+- Structured authorization decision logging hook.
+- Runtime composition wiring for audit retention/sink configuration.
+
+### Gate 0 - Preconditions And Input
+Status: PASS
+
+Checks:
+- Feature resolved from FEAT-0002 unique match: `docs/features/FEAT-0002-IAM-TENANT-MEMBERSHIP-BASELINE`.
+- Required lifecycle docs present: 00-REQUEST.md, 01-PLAN.md, 02-TEST-STRATEGY.md, 03-IMPLEMENTATION-LOG.md.
+- INC-02 completed and validated PASS before INC-03 execution.
+- Input increment resolved as INC-03.
+
+### Gate 1 - Architecture Safety Check
+Status: PASS
+
+Findings:
+- No cross-layer boundary violations introduced.
+- Audit abstractions remain in application ports and domain models.
+- Infrastructure adapters implement append-only/event logging behavior without leaking business rules.
+- Composition runtime wiring is isolated to `app/composition/app` environment and compose files.
+
+### Gate 2 - Implementation Plan Lock
+Status: PASS
+
+Plan lock confirmation:
+- Implemented only INC-03 scope from 01-PLAN.md.
+- INC-04 concerns (web/client integration baseline) were not implemented.
+- Dependencies respected: ADR-006 aligned via append-only audit event persistence and required fields.
+
+### Gate 3 - Incremental Implementation
+Status: PASS
+
+Implemented changes:
+- Added application port for structured authorization decision logging.
+- Added in-memory append-only audit event writer adapter.
+- Added file-backed audit event writer adapter with retention pruning (`IAM_AUDIT_RETENTION_DAYS`).
+- Added in-memory authorization decision logger adapter.
+- Updated membership governance use-case to:
+  - emit audit events for all mutation commands (`create`, `updateStatus`, `updateRole`, `delete`)
+  - include required payload fields (`actorUserId`, `tenantId`, `targetUserId`, `action`, `occurredAt`, `correlationId`)
+  - execute audit writes within the mutation operation boundary guarded by tenant lock.
+  - compensate/rollback mutation state when audit append fails in mutation flow.
+  - add structured allow/deny authorization decision logging hooks.
+- Updated backend bootstrapping to select audit sink from runtime env (`IAM_AUDIT_SINK`, `IAM_AUDIT_FILE_PATH`, `IAM_AUDIT_RETENTION_DAYS`) and wire decision logger dependencies.
+- Added integration test validating audit event creation and required payload integrity for mutation endpoints.
+- Added runtime tests for sink selection, retention enforcement, and audit-failure rollback behavior.
+- Added composition runtime environment wiring for audit retention baseline and sink selection.
+
+### Gate 4 - Verification With Test Evidence
+Status: PASS
+
+Executed checks:
+1. Backend tests
+- Command: `npm test`
+- Result: PASS
+- Evidence excerpt: "6 test files passed, 22 tests total passed"
+
+2. Backend build
+- Command: `npm run build`
+- Result: PASS
+- Evidence excerpt: `tsc -p tsconfig.json` completed with exit code 0
+
+3. Composition config validation
+- Command: `docker compose config`
+- Result: PASS
+- Evidence excerpt: compose file resolved successfully (warnings only for unset optional local env vars in shell context)
+
+### Touched Files
+- app/backend/app/src/application/ports/iam/authorization-decision-logger.port.ts
+- app/backend/app/src/application/use-cases/iam/membership-governance.use-case.ts
+- app/backend/app/src/infrastructure/iam/file-audit-event-writer.adapter.ts
+- app/backend/app/src/infrastructure/iam/in-memory-audit-event-writer.adapter.ts
+- app/backend/app/src/infrastructure/iam/in-memory-authorization-decision-logger.adapter.ts
+- app/backend/app/src/main.ts
+- app/backend/app/test/audit-runtime.test.ts
+- app/backend/app/test/iam-audit-events.test.ts
+- app/backend/app/test/membership-governance.use-case.test.ts
+- app/composition/app/.env.example
+- app/composition/app/docker-compose.yml
+
+### ADR Alignment
+- ADR-006 Audit Event Persistence and Retention: aligned via append-only audit store semantics, required payload fields, mutation-path emission with rollback on audit write failure, and runtime retention/sink configuration wired through composition and backend bootstrap.
+
+### Open Risks
+1. Medium: File-backed sink provides local persistence baseline but not centralized/distributed storage semantics; production archival and cross-instance consistency remain infra evolution concerns.
+2. Low: `docker compose config` warnings appear when shell env vars are not exported during validation runs; using `.env` file in real composition startup mitigates this.
+
+### Increment Outcome
+INC-03 status: COMPLETE
+
+Next recommended increment: INC-04 (Web and Client Integration Baseline)
+
+---
+
+## Increment: INC-04 - Web and Client Integration Baseline
+
+### Scope
+Implemented the INC-04 baseline defined in 01-PLAN.md:
+- Tenant context selection persistence and switching behavior in `app/web`.
+- Mirrored tenant context behavior in `app/client` baseline mobile flow.
+- Membership API integration for baseline admin actions.
+- Deterministic rendering of forbidden/conflict error states from IAM contract semantics.
+
+### Gate 0 - Preconditions And Input
+Status: PASS
+
+Checks:
+- Feature resolved from FEAT-0002 unique match: `docs/features/FEAT-0002-IAM-TENANT-MEMBERSHIP-BASELINE`.
+- Required lifecycle docs present: 00-REQUEST.md, 01-PLAN.md, 02-TEST-STRATEGY.md, 03-IMPLEMENTATION-LOG.md.
+- INC-03 completed and validated PASS before INC-04 execution.
+- Input increment resolved as INC-04.
+
+### Gate 1 - Architecture Safety Check
+Status: PASS
+
+Findings:
+- No cross-layer boundary violations introduced.
+- Web/client consume IAM APIs but do not implement local authorization decisions.
+- Tenant context remains explicit in request path/header to align with backend route-first resolution strategy.
+- Error rendering is deterministic and mapped from contract-level 403/409 semantics.
+
+### Gate 2 - Implementation Plan Lock
+Status: PASS
+
+Plan lock confirmation:
+- Implemented only INC-04 scope from 01-PLAN.md.
+- No new backend domain/rule logic introduced.
+- Dependencies respected: ADR-002, ADR-005, ADR-007 reflected in frontend/client behavior.
+
+### Gate 3 - Incremental Implementation
+Status: PASS
+
+Implemented changes:
+- Extended web IAM API service for membership list/status/role operations.
+- Added deterministic error mapping utilities for forbidden (`403`) and conflict (`409`) states.
+- Added web memberships page with:
+  - persistent tenant/actor context via local storage
+  - tenant switching controls
+  - baseline admin actions (role/status mutations)
+  - deterministic state rendering for API error outcomes.
+- Wired web route/navigation for memberships feature.
+- Added client IAM API service and deterministic mobile error mapping.
+- Reworked mobile home screen to mirror tenant context switching and baseline membership interaction, including role mutation action.
+- Added targeted tests:
+  - web tenant switching + scope isolation + deterministic error mapping behavior
+  - mobile deterministic 403/409 mapping behavior in API and screen user-flow tests.
+
+### Gate 4 - Verification With Test Evidence
+Status: PASS
+
+Executed checks:
+1. Web tests
+- Command: `npm test` (in `app/web/app`)
+- Result: PASS
+- Evidence excerpt: "3 suites passed, 5 tests total"
+
+2. Web end-to-end flow tests
+- Command: `npm run test:e2e` (in `app/web/app`)
+- Result: PASS
+- Evidence excerpt: "tenant-switching.e2e.test.tsx: 2 passed"
+
+3. Web build
+- Command: `npm run build` (in `app/web/app`)
+- Result: PASS
+- Evidence excerpt: Vite build completed and emitted production bundle.
+
+4. Client tests
+- Command: `npm test` (in `app/client/app`)
+- Result: PASS
+- Evidence excerpt: "3 suites passed, 4 tests"
+
+5. Client type-check
+- Command: `npm run type-check` (in `app/client/app`)
+- Result: PASS
+- Evidence excerpt: `tsc --noEmit` completed with no errors.
+
+### Touched Files
+- app/web/app/src/services/api.ts
+- app/web/app/src/pages/MembershipsPage.tsx
+- app/web/app/src/app/routes.tsx
+- app/web/app/src/app/App.tsx
+- app/web/app/src/styles/index.css
+- app/web/app/test/setup.ts
+- app/web/app/test/memberships.test.tsx
+- app/web/app/test/e2e/tenant-switching.e2e.test.tsx
+- app/web/app/package.json
+- app/client/app/src/services/iamApi.ts
+- app/client/app/src/screens/HomeScreen.tsx
+- app/client/app/__tests__/iam-api.test.ts
+- app/client/app/__tests__/home-screen.flow.test.tsx
+- app/client/app/package.json
+
+### ADR Alignment
+- ADR-002 Tenant Context Resolution Strategy: aligned by explicit tenant context switching and request path/header coherence in web/client API calls.
+- ADR-005 Role Model Extensibility Policy: aligned by consuming deterministic role values from API and rendering role actions without local role hierarchy overrides.
+- ADR-007 Global User Status Precedence: aligned by deterministic rendering of backend forbidden outcomes (including global-user blocked semantics) without client-side bypass logic.
+
+### Open Risks
+1. Medium: Client-side persistence is currently guaranteed on web (`localStorage`) while mobile mirrors switching behavior but does not yet persist across app restarts.
+2. Low: Baseline admin actions are intentionally minimal for INC-04 and may need UX refinement before production rollout.
+
+### Increment Outcome
+INC-04 status: COMPLETE
+
+Next recommended increment: Proceed to Step 15 (Feature Review)

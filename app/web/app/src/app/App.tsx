@@ -11,6 +11,7 @@ export function App(): JSX.Element {
         <nav>
           <Link to="/">Home</Link>
           <Link to="/health">Health</Link>
+          <Link to="/memberships">Memberships</Link>
         </nav>
       </header>
       <main className="main">{content}</main>

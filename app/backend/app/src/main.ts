@@ -1,7 +1,12 @@
 import Fastify, { type FastifyInstance } from 'fastify';
+import type { AuditEventWriterPort } from './application/ports/iam/audit-event-writer.port';
+import type { AuthorizationDecisionLoggerPort } from './application/ports/iam/authorization-decision-logger.port';
 import { GetHealthStatusUseCase } from './application/use-cases/get-health-status.use-case';
 import { MembershipGovernanceUseCase } from './application/use-cases/iam/membership-governance.use-case';
 import type { GlobalUserProfile } from './domain/iam/global-user-status';
+import { FileAuditEventWriterAdapter } from './infrastructure/iam/file-audit-event-writer.adapter';
+import { InMemoryAuditEventWriterAdapter } from './infrastructure/iam/in-memory-audit-event-writer.adapter';
+import { InMemoryAuthorizationDecisionLoggerAdapter } from './infrastructure/iam/in-memory-authorization-decision-logger.adapter';
 import { InMemoryHealthCheckAdapter } from './infrastructure/health/in-memory-health-check.adapter';
 import { DefaultTenantContextResolverAdapter } from './infrastructure/iam/default-tenant-context-resolver.adapter';
 import { InMemoryGlobalUserStatusReaderAdapter } from './infrastructure/iam/in-memory-global-user-status-reader.adapter';
@@ -10,7 +15,28 @@ import type { TenantMembership } from './domain/iam/tenant-membership';
 import { registerHealthRoutes } from './presentation/http/routes/health.routes';
 import { registerIamMembershipRoutes } from './presentation/http/routes/iam-memberships.routes';
 
-export function buildApp(): FastifyInstance {
+interface BuildAppOverrides {
+  auditEventWriter?: AuditEventWriterPort;
+  decisionLogger?: AuthorizationDecisionLoggerPort;
+}
+
+function resolveAuditEventWriterFromEnv(): AuditEventWriterPort {
+  const sink = (process.env.IAM_AUDIT_SINK ?? 'in-memory').toLowerCase();
+  if (sink === 'file') {
+    const retentionDays = Number(process.env.IAM_AUDIT_RETENTION_DAYS ?? '365');
+    const filePath = process.env.IAM_AUDIT_FILE_PATH ?? './var/audit-events.ndjson';
+    return new FileAuditEventWriterAdapter({
+      filePath,
+      retentionDays: Number.isFinite(retentionDays) ? retentionDays : 365
+    });
+  }
+
+  return new InMemoryAuditEventWriterAdapter();
+}
+
+export { resolveAuditEventWriterFromEnv };
+
+export function buildApp(overrides: BuildAppOverrides = {}): FastifyInstance {
   const app = Fastify({ logger: true });
 
   const healthCheckAdapter = new InMemoryHealthCheckAdapter();
@@ -61,9 +87,14 @@ export function buildApp(): FastifyInstance {
 
   const membershipRepository = new InMemoryTenantMembershipRepositoryAdapter(membershipSeed);
   const globalUserStatusReader = new InMemoryGlobalUserStatusReaderAdapter(globalUserSeed);
+  const auditEventWriter = overrides.auditEventWriter ?? resolveAuditEventWriterFromEnv();
+  const decisionLogger =
+    overrides.decisionLogger ?? new InMemoryAuthorizationDecisionLoggerAdapter();
   const membershipGovernanceUseCase = new MembershipGovernanceUseCase(
     membershipRepository,
-    globalUserStatusReader
+    globalUserStatusReader,
+    auditEventWriter,
+    decisionLogger
   );
 
   registerHealthRoutes(app, { getHealthStatusUseCase });

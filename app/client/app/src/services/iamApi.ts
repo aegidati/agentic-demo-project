@@ -1,7 +1,3 @@
-export interface HealthResponse {
-  status: string;
-}
-
 export type TenantRole = 'Owner' | 'Admin' | 'Member' | 'Viewer';
 export type MembershipStatus = 'Invited' | 'Active' | 'Suspended' | 'Revoked';
 
@@ -10,38 +6,33 @@ export interface TenantMembership {
   userId: string;
   role: TenantRole;
   status: MembershipStatus;
-  createdAt: string;
-  updatedAt: string;
 }
 
-export interface MembershipListResponse {
+interface MembershipListResponse {
   items: TenantMembership[];
   total: number;
 }
 
 interface ProblemResponse {
-  status?: number;
   errorCode?: string;
   detail?: string;
 }
 
-export class ApiError extends Error {
+export class MobileApiError extends Error {
   constructor(
     public readonly status: number,
     public readonly errorCode: string | undefined,
     message: string
   ) {
     super(message);
-    this.name = 'ApiError';
+    this.name = 'MobileApiError';
   }
 }
 
-const DEFAULT_BASE_URL = 'http://localhost:3000';
-
-function getBaseUrl(): string {
-  const configured = import.meta.env.VITE_API_BASE_URL?.trim();
-  const baseUrl = configured && configured.length > 0 ? configured : DEFAULT_BASE_URL;
-  return baseUrl.replace(/\/$/, '');
+function getApiBaseUrl(): string {
+  const configured = process.env.EXPO_PUBLIC_API_URL?.trim();
+  const base = configured && configured.length > 0 ? configured : 'http://localhost:3000';
+  return base.replace(/\/$/, '');
 }
 
 async function parseProblem(response: Response): Promise<ProblemResponse> {
@@ -52,45 +43,20 @@ async function parseProblem(response: Response): Promise<ProblemResponse> {
   }
 }
 
-async function assertOk(response: Response, defaultMessage: string): Promise<void> {
+async function assertOk(response: Response, message: string): Promise<void> {
   if (response.ok) {
     return;
   }
 
   const problem = await parseProblem(response);
-  throw new ApiError(
-    response.status,
-    problem.errorCode,
-    problem.detail ?? defaultMessage
-  );
-}
-
-export async function getHealth(): Promise<HealthResponse> {
-  const response = await fetch(`${getBaseUrl()}/health`, {
-    method: 'GET',
-    headers: {
-      Accept: 'application/json'
-    }
-  });
-
-  if (!response.ok) {
-    throw new Error(`Health check failed with status ${response.status}`);
-  }
-
-  const body = (await response.json()) as HealthResponse;
-
-  if (!body || typeof body.status !== 'string') {
-    throw new Error('Invalid health response format');
-  }
-
-  return body;
+  throw new MobileApiError(response.status, problem.errorCode, problem.detail ?? message);
 }
 
 export async function listMemberships(input: {
   tenantId: string;
   actorUserId: string;
 }): Promise<MembershipListResponse> {
-  const response = await fetch(`${getBaseUrl()}/tenants/${input.tenantId}/memberships`, {
+  const response = await fetch(`${getApiBaseUrl()}/tenants/${input.tenantId}/memberships`, {
     method: 'GET',
     headers: {
       Accept: 'application/json',
@@ -108,9 +74,9 @@ export async function updateMembershipStatus(input: {
   actorUserId: string;
   userId: string;
   status: MembershipStatus;
-}): Promise<TenantMembership> {
+}): Promise<void> {
   const response = await fetch(
-    `${getBaseUrl()}/tenants/${input.tenantId}/memberships/${input.userId}/status`,
+    `${getApiBaseUrl()}/tenants/${input.tenantId}/memberships/${input.userId}/status`,
     {
       method: 'PATCH',
       headers: {
@@ -123,8 +89,7 @@ export async function updateMembershipStatus(input: {
     }
   );
 
-  await assertOk(response, 'Unable to update membership status.');
-  return (await response.json()) as TenantMembership;
+  await assertOk(response, 'Unable to update status.');
 }
 
 export async function updateMembershipRole(input: {
@@ -132,9 +97,9 @@ export async function updateMembershipRole(input: {
   actorUserId: string;
   userId: string;
   role: TenantRole;
-}): Promise<TenantMembership> {
+}): Promise<void> {
   const response = await fetch(
-    `${getBaseUrl()}/tenants/${input.tenantId}/memberships/${input.userId}/role`,
+    `${getApiBaseUrl()}/tenants/${input.tenantId}/memberships/${input.userId}/role`,
     {
       method: 'PATCH',
       headers: {
@@ -147,25 +112,22 @@ export async function updateMembershipRole(input: {
     }
   );
 
-  await assertOk(response, 'Unable to update membership role.');
-  return (await response.json()) as TenantMembership;
+  await assertOk(response, 'Unable to update role.');
 }
 
-export function mapIamErrorToMessage(error: unknown): string {
-  if (!(error instanceof ApiError)) {
-    return 'Unexpected error while contacting IAM service.';
+export function mapMobileIamError(error: unknown): string {
+  if (!(error instanceof MobileApiError)) {
+    return 'Unexpected mobile IAM error.';
   }
 
   if (error.status === 403) {
-    if (error.errorCode === 'auth.global_user_blocked') {
-      return 'Access denied: global user status is not eligible.';
-    }
-
-    return 'Access denied for the selected tenant context.';
+    return error.errorCode === 'auth.global_user_blocked'
+      ? 'Access denied: global status blocked.'
+      : 'Access denied for selected tenant context.';
   }
 
   if (error.status === 409) {
-    return 'Conflict: membership invariant violation. Review role/status constraints.';
+    return 'Conflict: invariant violation from IAM API.';
   }
 
   return error.message;

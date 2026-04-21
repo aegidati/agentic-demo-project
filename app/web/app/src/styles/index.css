@@ -33,3 +33,38 @@ body {
 .main {
   margin-top: 1.5rem;
 }
+
+.controls {
+  display: flex;
+  gap: 1rem;
+  align-items: end;
+  flex-wrap: wrap;
+  margin-bottom: 1rem;
+}
+
+.controls label {
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+  font-size: 0.9rem;
+}
+
+.controls select {
+  padding: 0.35rem 0.45rem;
+}
+
+.table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.table th,
+.table td {
+  padding: 0.5rem;
+  border-bottom: 1px solid #d1d5db;
+  text-align: left;
+}
+
+.table td button {
+  margin-right: 0.5rem;
+}
