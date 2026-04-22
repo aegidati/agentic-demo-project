@@ -1,4 +1,5 @@
 import Fastify, { type FastifyInstance } from 'fastify';
+import fastifyCors from '@fastify/cors';
 import type { AuditEventWriterPort } from './application/ports/iam/audit-event-writer.port';
 import type { AuthorizationDecisionLoggerPort } from './application/ports/iam/authorization-decision-logger.port';
 import { GetHealthStatusUseCase } from './application/use-cases/get-health-status.use-case';
@@ -36,8 +37,18 @@ function resolveAuditEventWriterFromEnv(): AuditEventWriterPort {
 
 export { resolveAuditEventWriterFromEnv };
 
-export function buildApp(overrides: BuildAppOverrides = {}): FastifyInstance {
+export async function buildApp(overrides: BuildAppOverrides = {}): Promise<FastifyInstance> {
   const app = Fastify({ logger: true });
+
+  const corsOrigins = (process.env.CORS_ORIGINS ?? 'http://localhost:5173,http://localhost:3000,http://localhost:8080')
+    .split(',')
+    .map((origin) => origin.trim())
+    .filter((origin) => origin.length > 0);
+
+  await app.register(fastifyCors, {
+    origin: corsOrigins,
+    credentials: true
+  });
 
   const healthCheckAdapter = new InMemoryHealthCheckAdapter();
   const getHealthStatusUseCase = new GetHealthStatusUseCase(healthCheckAdapter);
@@ -107,7 +118,7 @@ export function buildApp(overrides: BuildAppOverrides = {}): FastifyInstance {
 }
 
 export async function startServer(): Promise<void> {
-  const app = buildApp();
+  const app = await buildApp();
   const host = process.env.HOST ?? '0.0.0.0';
   const port = Number(process.env.PORT ?? 3000);
 

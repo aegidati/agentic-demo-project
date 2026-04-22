@@ -9,7 +9,7 @@ describe('iam audit events', () => {
 
   beforeAll(async () => {
     auditWriter = new InMemoryAuditEventWriterAdapter();
-    app = buildApp({ auditEventWriter: auditWriter });
+    app = await buildApp({ auditEventWriter: auditWriter });
     await app.ready();
   });
 

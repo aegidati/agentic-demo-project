@@ -6,7 +6,7 @@ describe('health endpoint', () => {
   let app: FastifyInstance;
 
   beforeAll(async () => {
-    app = buildApp();
+    app = await buildApp();
     await app.ready();
   });
 

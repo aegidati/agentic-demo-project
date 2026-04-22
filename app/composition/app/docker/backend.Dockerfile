@@ -1,39 +1,42 @@
 # Backend Dockerfile for Node.js application
-# Assumes a standard Node.js backend with package.json in app/backend
+# Build context is app/ (root), backend source is at backend/app/
+# Multi-stage build: compile TypeScript, then run minimal production image
 
 FROM node:20-alpine AS builder
 
-WORKDIR /app
+WORKDIR /build
 
-COPY package*.json ./
+# Copy package files
+COPY backend/app/package*.json ./
 
+# Install full dependency graph for build stage
 RUN npm ci
 
-COPY . .
+# Copy only files required for TypeScript build
+COPY backend/app/src ./src
+COPY backend/app/tsconfig.json ./tsconfig.json
 
-# Build if build script exists (suppress error if missing)
-RUN npm run build 2>/dev/null || true
+# Build application
+RUN npm run build
 
 
 FROM node:20-alpine
 
 WORKDIR /app
 
+ENV NODE_ENV=production
+
 # Copy package files
-COPY package*.json ./
+COPY backend/app/package*.json ./
 
 # Install production dependencies only
-RUN npm ci --only=production
+RUN npm ci --omit=dev && npm cache clean --force
+# Copy compiled code from builder
+COPY --from=builder /build/dist ./dist
 
-# Copy entire app from builder, then remove heavy node_modules and reinstall prod-only
-COPY --from=builder /app /tmp/build
-
-# Copy relevant source/build files to final location
-# This handles different project layouts: TypeScript (dist/), JavaScript (src/), etc.
-RUN cp -r /tmp/build/src . 2>/dev/null || true && \
-    cp -r /tmp/build/dist . 2>/dev/null || true && \
-    cp -r /tmp/build/build . 2>/dev/null || true && \
-    cp -r /tmp/build/public . 2>/dev/null || true
+# Create non-root user for security
+RUN addgroup -g 1001 -S nodejs && adduser -S nodejs -u 1001
+USER nodejs
 
 EXPOSE 3000
 
@@ -42,4 +45,4 @@ HEALTHCHECK --interval=10s --timeout=5s --retries=5 \
   CMD node -e "require('http').get('http://localhost:3000/health', (r) => {if (r.statusCode !== 200) throw new Error(r.statusCode)})"
 
 # Start application
-CMD ["npm", "start"]
+CMD ["node", "dist/src/main.js"]

@@ -5,7 +5,7 @@ const main_1 = require("../src/main");
 (0, vitest_1.describe)('health endpoint', () => {
     let app;
     (0, vitest_1.beforeAll)(async () => {
-        app = (0, main_1.buildApp)();
+        app = await (0, main_1.buildApp)();
         await app.ready();
     });
     (0, vitest_1.afterAll)(async () => {

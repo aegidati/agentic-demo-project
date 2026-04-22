@@ -7,6 +7,7 @@ exports.resolveAuditEventWriterFromEnv = resolveAuditEventWriterFromEnv;
 exports.buildApp = buildApp;
 exports.startServer = startServer;
 const fastify_1 = __importDefault(require("fastify"));
+const cors_1 = __importDefault(require("@fastify/cors"));
 const get_health_status_use_case_1 = require("./application/use-cases/get-health-status.use-case");
 const membership_governance_use_case_1 = require("./application/use-cases/iam/membership-governance.use-case");
 const file_audit_event_writer_adapter_1 = require("./infrastructure/iam/file-audit-event-writer.adapter");
@@ -30,8 +31,12 @@ function resolveAuditEventWriterFromEnv() {
     }
     return new in_memory_audit_event_writer_adapter_1.InMemoryAuditEventWriterAdapter();
 }
-function buildApp(overrides = {}) {
+async function buildApp(overrides = {}) {
     const app = (0, fastify_1.default)({ logger: true });
+    await app.register(cors_1.default, {
+        origin: ['http://localhost:5173', 'http://localhost:3000'],
+        credentials: true
+    });
     const healthCheckAdapter = new in_memory_health_check_adapter_1.InMemoryHealthCheckAdapter();
     const getHealthStatusUseCase = new get_health_status_use_case_1.GetHealthStatusUseCase(healthCheckAdapter);
     const tenantContextResolver = new default_tenant_context_resolver_adapter_1.DefaultTenantContextResolverAdapter();
@@ -88,7 +93,7 @@ function buildApp(overrides = {}) {
     return app;
 }
 async function startServer() {
-    const app = buildApp();
+    const app = await buildApp();
     const host = process.env.HOST ?? '0.0.0.0';
     const port = Number(process.env.PORT ?? 3000);
     await app.listen({ host, port });

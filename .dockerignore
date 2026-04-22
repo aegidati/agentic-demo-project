@@ -1,0 +1,48 @@
+# Dependencies
+node_modules
+npm-debug.log
+yarn-error.log
+package-lock.json.md5
+
+# Build artifacts
+dist
+build
+.next
+out
+.cache
+.turbo
+
+# Source maps
+*.map
+
+# IDE / Editor
+.vscode
+.idea
+*.swp
+*.swo
+*~
+.DS_Store
+
+# Git
+.git
+.gitignore
+
+# CI/CD
+.github
+.gitlab-ci.yml
+
+# Environment
+.env
+.env.local
+.env.*.local
+
+# Testing
+coverage
+.nyc_output
+.pytest_cache
+
+# Temporary
+tmp
+temp
+*.log
+*.pid

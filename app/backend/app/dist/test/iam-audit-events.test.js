@@ -8,7 +8,7 @@ const in_memory_audit_event_writer_adapter_1 = require("../src/infrastructure/ia
     let auditWriter;
     (0, vitest_1.beforeAll)(async () => {
         auditWriter = new in_memory_audit_event_writer_adapter_1.InMemoryAuditEventWriterAdapter();
-        app = (0, main_1.buildApp)({ auditEventWriter: auditWriter });
+        app = await (0, main_1.buildApp)({ auditEventWriter: auditWriter });
         await app.ready();
     });
     (0, vitest_1.afterAll)(async () => {

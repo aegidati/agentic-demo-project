@@ -6,7 +6,7 @@ describe('iam memberships routes', () => {
   let app: FastifyInstance;
 
   beforeAll(async () => {
-    app = buildApp();
+    app = await buildApp();
     await app.ready();
   });
 
