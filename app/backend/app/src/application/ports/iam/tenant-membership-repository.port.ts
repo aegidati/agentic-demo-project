@@ -16,6 +16,7 @@ export interface CreateTenantMembershipInput {
 export interface TenantMembershipRepositoryPort {
   withTenantLock<T>(tenantId: string, operation: () => Promise<T>): Promise<T>;
   listByTenantId(tenantId: string): Promise<TenantMembership[]>;
+  listAllTenantIds(): Promise<string[]>;
   findByIdentity(identity: TenantMembershipIdentity): Promise<TenantMembership | null>;
   create(input: CreateTenantMembershipInput): Promise<TenantMembership>;
   update(identity: TenantMembershipIdentity, update: TenantMembershipUpdate): Promise<TenantMembership>;

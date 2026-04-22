@@ -17,8 +17,11 @@ const in_memory_health_check_adapter_1 = require("./infrastructure/health/in-mem
 const default_tenant_context_resolver_adapter_1 = require("./infrastructure/iam/default-tenant-context-resolver.adapter");
 const in_memory_global_user_status_reader_adapter_1 = require("./infrastructure/iam/in-memory-global-user-status-reader.adapter");
 const in_memory_tenant_membership_repository_adapter_1 = require("./infrastructure/iam/in-memory-tenant-membership-repository.adapter");
+const in_memory_platform_membership_repository_adapter_1 = require("./infrastructure/iam/in-memory-platform-membership-repository.adapter");
+const platform_governance_use_case_1 = require("./application/use-cases/iam/platform-governance.use-case");
 const health_routes_1 = require("./presentation/http/routes/health.routes");
 const iam_memberships_routes_1 = require("./presentation/http/routes/iam-memberships.routes");
+const iam_platform_routes_1 = require("./presentation/http/routes/iam-platform.routes");
 function resolveAuditEventWriterFromEnv() {
     const sink = (process.env.IAM_AUDIT_SINK ?? 'in-memory').toLowerCase();
     if (sink === 'file') {
@@ -33,8 +36,12 @@ function resolveAuditEventWriterFromEnv() {
 }
 async function buildApp(overrides = {}) {
     const app = (0, fastify_1.default)({ logger: true });
+    const corsOrigins = (process.env.CORS_ORIGINS ?? 'http://localhost:5173,http://localhost:3000,http://localhost:8080')
+        .split(',')
+        .map((origin) => origin.trim())
+        .filter((origin) => origin.length > 0);
     await app.register(cors_1.default, {
-        origin: ['http://localhost:5173', 'http://localhost:3000'],
+        origin: corsOrigins,
         credentials: true
     });
     const healthCheckAdapter = new in_memory_health_check_adapter_1.InMemoryHealthCheckAdapter();
@@ -78,18 +85,31 @@ async function buildApp(overrides = {}) {
         { userId: 'owner-001', globalStatus: 'Active' },
         { userId: 'member-001', globalStatus: 'Active' },
         { userId: 'owner-002', globalStatus: 'Active' },
-        { userId: 'disabled-001', globalStatus: 'Disabled' }
+        { userId: 'disabled-001', globalStatus: 'Disabled' },
+        { userId: 'superadmin-001', globalStatus: 'Active' }
+    ];
+    const platformMembershipSeed = [
+        {
+            userId: 'superadmin-001',
+            role: 'Superadmin',
+            status: 'Active',
+            assignedAt: new Date('2026-04-22T08:00:00.000Z'),
+            updatedAt: new Date('2026-04-22T08:00:00.000Z')
+        }
     ];
     const membershipRepository = new in_memory_tenant_membership_repository_adapter_1.InMemoryTenantMembershipRepositoryAdapter(membershipSeed);
     const globalUserStatusReader = new in_memory_global_user_status_reader_adapter_1.InMemoryGlobalUserStatusReaderAdapter(globalUserSeed);
     const auditEventWriter = overrides.auditEventWriter ?? resolveAuditEventWriterFromEnv();
     const decisionLogger = overrides.decisionLogger ?? new in_memory_authorization_decision_logger_adapter_1.InMemoryAuthorizationDecisionLoggerAdapter();
     const membershipGovernanceUseCase = new membership_governance_use_case_1.MembershipGovernanceUseCase(membershipRepository, globalUserStatusReader, auditEventWriter, decisionLogger);
+    const platformMembershipRepository = new in_memory_platform_membership_repository_adapter_1.InMemoryPlatformMembershipRepositoryAdapter(platformMembershipSeed);
+    const platformGovernanceUseCase = new platform_governance_use_case_1.PlatformGovernanceUseCase(platformMembershipRepository, membershipRepository, auditEventWriter, decisionLogger);
     (0, health_routes_1.registerHealthRoutes)(app, { getHealthStatusUseCase });
     (0, iam_memberships_routes_1.registerIamMembershipRoutes)(app, {
         membershipGovernanceUseCase,
         tenantContextResolver
     });
+    (0, iam_platform_routes_1.registerIamPlatformRoutes)(app, { platformGovernanceUseCase });
     return app;
 }
 async function startServer() {

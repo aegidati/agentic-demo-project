@@ -7,6 +7,8 @@ export type AuthorizationErrorCode =
   | 'membership.invalid_transition'
   | 'membership.last_owner_protection'
   | 'membership.self_elevation'
+  | 'platform.access.denied'
+  | 'platform.self_revoke_forbidden'
   | 'request.invalid_payload';
 
 export class AuthorizationError extends Error {

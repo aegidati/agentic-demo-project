@@ -13,8 +13,12 @@ import { DefaultTenantContextResolverAdapter } from './infrastructure/iam/defaul
 import { InMemoryGlobalUserStatusReaderAdapter } from './infrastructure/iam/in-memory-global-user-status-reader.adapter';
 import { InMemoryTenantMembershipRepositoryAdapter } from './infrastructure/iam/in-memory-tenant-membership-repository.adapter';
 import type { TenantMembership } from './domain/iam/tenant-membership';
+import { InMemoryPlatformMembershipRepositoryAdapter } from './infrastructure/iam/in-memory-platform-membership-repository.adapter';
+import type { PlatformMembership } from './domain/iam/platform-role';
+import { PlatformGovernanceUseCase } from './application/use-cases/iam/platform-governance.use-case';
 import { registerHealthRoutes } from './presentation/http/routes/health.routes';
 import { registerIamMembershipRoutes } from './presentation/http/routes/iam-memberships.routes';
+import { registerIamPlatformRoutes } from './presentation/http/routes/iam-platform.routes';
 
 interface BuildAppOverrides {
   auditEventWriter?: AuditEventWriterPort;
@@ -93,7 +97,18 @@ export async function buildApp(overrides: BuildAppOverrides = {}): Promise<Fasti
     { userId: 'owner-001', globalStatus: 'Active' },
     { userId: 'member-001', globalStatus: 'Active' },
     { userId: 'owner-002', globalStatus: 'Active' },
-    { userId: 'disabled-001', globalStatus: 'Disabled' }
+    { userId: 'disabled-001', globalStatus: 'Disabled' },
+    { userId: 'superadmin-001', globalStatus: 'Active' }
+  ];
+
+  const platformMembershipSeed: PlatformMembership[] = [
+    {
+      userId: 'superadmin-001',
+      role: 'Superadmin',
+      status: 'Active',
+      assignedAt: new Date('2026-04-22T08:00:00.000Z'),
+      updatedAt: new Date('2026-04-22T08:00:00.000Z')
+    }
   ];
 
   const membershipRepository = new InMemoryTenantMembershipRepositoryAdapter(membershipSeed);
@@ -108,11 +123,22 @@ export async function buildApp(overrides: BuildAppOverrides = {}): Promise<Fasti
     decisionLogger
   );
 
+  const platformMembershipRepository = new InMemoryPlatformMembershipRepositoryAdapter(
+    platformMembershipSeed
+  );
+  const platformGovernanceUseCase = new PlatformGovernanceUseCase(
+    platformMembershipRepository,
+    membershipRepository,
+    auditEventWriter,
+    decisionLogger
+  );
+
   registerHealthRoutes(app, { getHealthStatusUseCase });
   registerIamMembershipRoutes(app, {
     membershipGovernanceUseCase,
     tenantContextResolver
   });
+  registerIamPlatformRoutes(app, { platformGovernanceUseCase });
 
   return app;
 }

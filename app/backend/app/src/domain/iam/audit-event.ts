@@ -2,7 +2,9 @@ export type GovernanceAction =
   | 'membership.created'
   | 'membership.status.updated'
   | 'membership.deleted'
-  | 'membership.role.updated';
+  | 'membership.role.updated'
+  | 'platform.superadmin.assigned'
+  | 'platform.superadmin.revoked';
 
 export interface AuditEvent {
   id: string;

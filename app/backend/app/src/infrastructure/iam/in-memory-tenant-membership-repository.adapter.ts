@@ -47,6 +47,10 @@ export class InMemoryTenantMembershipRepositoryAdapter
     return [...this.store.values()].filter((m) => m.tenantId === tenantId);
   }
 
+  async listAllTenantIds(): Promise<string[]> {
+    return [...new Set([...this.store.values()].map((m) => m.tenantId))];
+  }
+
   async findByIdentity(
     identity: TenantMembershipIdentity
   ): Promise<TenantMembership | null> {

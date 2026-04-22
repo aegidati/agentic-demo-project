@@ -31,6 +31,9 @@ class InMemoryTenantMembershipRepositoryAdapter {
     async listByTenantId(tenantId) {
         return [...this.store.values()].filter((m) => m.tenantId === tenantId);
     }
+    async listAllTenantIds() {
+        return [...new Set([...this.store.values()].map((m) => m.tenantId))];
+    }
     async findByIdentity(identity) {
         return this.store.get(this.buildKey(identity.tenantId, identity.userId)) ?? null;
     }
