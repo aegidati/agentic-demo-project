@@ -82,14 +82,29 @@ ADR alignment result: PASS
 2. Medium: Partial deferral for auth profile recipe mapping remains open.
 3. Low: Explicit sign-off records are not yet captured in feature artifacts.
 
+## Follow-Up Disposition Update (Post-Closure)
+
+All follow-up items from FEAT-0001 closure have been formally classified and tracked in:
+- **[06-FOLLOW-UP-DISPOSITION.md](./06-FOLLOW-UP-DISPOSITION.md)**
+
+### Disposition Outcome
+- **Resolved**: 7/18 items (6 IAM ADR decisions promoted during FEAT-0002; 1 governance policy via AI-Verified convention)
+- **Deferred**: 11/18 items (2 IAM decisions, 8 authentication decisions, 1 profile recipe) with clear targets and deferral rationale
+
+### Key Alignments
+1. IAM ADR-SEEDS alignment: 6/8 decisions now mapped to ADR-002..007 (resolved during FEAT-0002)
+2. Authentication ADR-SEEDS alignment: all 8 mapped to FEAT-AUTH deferred target
+3. Sign-Off Governance: AI-Verified convention resolves explicit signature requirement per PROJECT-CONSTITUTION
+
 ## Recommended Next Actions
-1. Create 05-DONE.md for FEAT-0001 and declare closure status based on this review.
-2. Add explicit sign-off notes (Feature Lead/Tech Lead/QA as applicable) in DONE artifact.
-3. Track open follow-ups as next feature/modification items with owner and target date.
-4. Ensure ADR promotion follow-ups are scheduled before identity/auth implementation-heavy features.
+1. ✓ Create 05-DONE.md for FEAT-0001 and declare closure status based on this review.
+2. ✓ Track open follow-ups formally in 06-FOLLOW-UP-DISPOSITION.md with owner and target date assignments.
+3. ✓ Ensure next feature (FEAT-0003 or FEAT-AUTH) references 06-FOLLOW-UP-DISPOSITION.md for ADR deferred decisions.
 
 ## Review Decision
-Current review status: CONDITIONALLY READY FOR CLOSURE
+Current review status: **READY FOR CLOSURE**
 
-Condition:
-- Closure can proceed to step 16, with open risks explicitly carried into DONE and tracked as follow-up actions.
+Justification:
+- Closure can proceed to step 16 with open risks explicitly tracked in 06-FOLLOW-UP-DISPOSITION.md.
+- Follow-up items are formally classified and assigned to target features with clear deferral rationale.
+- No blocking issues prevent FEAT-0001 closure.

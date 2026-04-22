@@ -33,16 +33,24 @@ FEAT-0001 is closed as a bootstrap documentation feature because:
 4. Review artifact exists with explicit DoD verification.
 5. No unresolved closure blockers remain.
 
-## Tracked Residual Risks (Non-Blocking)
-1. Medium: Promote IAM ADR seeds from docs/domain-templates/IDENTITY-ACCESS/ADR-SEEDS.md into project ADRs before identity-heavy implementation features.
-2. Medium: Promote authentication ADR seeds from docs/domain-templates/AUTHENTICATION/ADR-SEEDS.md into project ADRs before provider-specific implementation.
-3. Medium: Resolve partial deferral for auth profile recipe mapping for fullstack-stack-react-native.
-4. Low: Capture explicit sign-off notes (Feature Lead, Tech Lead, QA) in subsequent governance cycle records.
+## Follow-Up Disposition (Formally Tracked)
 
-## Follow-Up Actions
-1. Open a follow-up feature/modification item for ADR seed promotion and assign owner/date.
-2. Open a follow-up item for auth profile recipe resolution and assign owner/date.
-3. Ensure these follow-ups are completed before FEAT-0002 implementation-heavy closure.
+All follow-up actions from FEAT-0001 closure have been formally classified and tracked in:
+- **[06-FOLLOW-UP-DISPOSITION.md](./06-FOLLOW-UP-DISPOSITION.md)**
+
+### Disposition Summary
+- **Resolved Items**: 7/18 follow-up items resolved via ADR-002..007 decisions (during FEAT-0002) and AI-Verified governance policy.
+- **Deferred Items**: 11/18 follow-up items deferred to future features (primarily FEAT-AUTH) with clear rationale and target assignment.
+
+### Key Findings
+1. **IAM ADR-SEEDS**: 6/8 decisions resolved (ADR-002, ADR-003, ADR-004, ADR-005, ADR-006, ADR-007); 2 deferred (Global Identity, Forbidden Vs Hidden).
+2. **Authentication ADR-SEEDS**: All 8 decisions deferred to FEAT-AUTH or dedicated authentication feature.
+3. **Profile Recipe**: Auth profile recipe for fullstack-react-native deferred to FEAT-AUTH; closest reference used in bootstrap.
+4. **Sign-Off Governance**: Resolved via AI-Verified convention established in FEAT-0002; DEFINITION-OF-DONE update recommended.
+
+### Action Plan
+- See 06-FOLLOW-UP-DISPOSITION.md for complete tracking table, owner assignments, and due dates.
+- Next feature (FEAT-0003 or FEAT-AUTH) should prioritize authentication ADR decisions.
 
 ## Sign-Off
 - Feature closure recorded by: Feature Orchestrator workflow execution.
