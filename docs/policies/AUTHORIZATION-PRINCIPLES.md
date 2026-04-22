@@ -16,12 +16,21 @@ This policy establishes the baseline business principles for tenant-scoped autho
 - If TenantMembership is missing, access must be denied by default.
 - If TenantMembership is invalid, access must be denied by default.
 - If no explicit Permission baseline or project-specific rule grants an action, access must be denied by default.
+- If platform-scope privilege is missing, invalid, or not explicitly granted, platform-governance actions must be denied by default.
+
+## Platform-Scoped Authorization
+
+- Platform-scoped governance is separate from tenant-scoped authorization.
+- `Superadmin`, when adopted, is a platform-scope baseline and not a `TenantRole`.
+- Platform-scope privilege does not implicitly grant `Owner`, `Admin`, `Member`, or `Viewer` in any Tenant.
+- Tenant-scoped actions still require explicit tenant context unless a separately documented platform-governance flow defines otherwise.
 
 ## No Cross-Tenant Inheritance
 
 - Rights granted in one Tenant do not imply rights in any other Tenant.
 - TenantRole values are local to the Tenant in which they are assigned.
 - Cross-tenant authorization inheritance is forbidden unless a future governance decision explicitly redefines the model.
+- Platform-scope privilege must not be implemented as hidden cross-tenant inheritance.
 
 ## Authentication And Authorization Are Separate Concerns
 
@@ -34,6 +43,7 @@ This policy establishes the baseline business principles for tenant-scoped autho
 - Changes to TenantMembership should produce an AuditEvent.
 - Changes to TenantRole should produce an AuditEvent.
 - Ownership transfer should produce an AuditEvent.
+- Assignment, revocation, and use of platform-scope privileged access should produce an AuditEvent.
 - Derived projects should define retention, access, and review expectations for AuditEvent records.
 
 ## Principle Of Least Privilege
@@ -41,6 +51,7 @@ This policy establishes the baseline business principles for tenant-scoped autho
 - Users should receive only the minimum Permission set required for their role and context.
 - Elevated actions should remain limited to roles that are explicitly allowed to perform them.
 - Self-elevation to a higher TenantRole is forbidden.
+- Platform-scope privileged elevation should be explicitly governed and auditable.
 
 ## Enforcement Note
 

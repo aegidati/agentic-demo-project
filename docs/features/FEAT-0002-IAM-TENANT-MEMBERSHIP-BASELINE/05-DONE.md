@@ -70,6 +70,11 @@ Per acceptance criteria from 00-REQUEST:
 4. **Performance Assessment** (non-blocking): No performance impact artifact attached; consider for scalability evaluation under multi-tenant load.
 5. **Mobile Restart Persistence** (non-blocking, low priority): Client app tenant context persistence after application restart not yet tested; candidate for future hardening or related feature.
 
+## Post-Closure Modifications
+
+- [MOD-01-PLATFORM-SUPERADMIN-BASELINE.md](./MOD-01-PLATFORM-SUPERADMIN-BASELINE.md) records governance-only adoption of the platform-scope Superadmin baseline.
+- [ADR-008-PLATFORM-SUPERADMIN-BOUNDARY.md](../../adr/ADR-008-PLATFORM-SUPERADMIN-BOUNDARY.md) formalizes the separation between `PlatformRole` and `TenantRole` for future work.
+
 ## Closure Statement
 FEAT-0002 is complete per documented acceptance criteria, implementation evidence, and Definition of Done validation. All increments (INC-01..INC-04) delivered with gate verification. Feature is production-ready for baseline IAM tenant membership functionality.
 

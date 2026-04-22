@@ -31,6 +31,9 @@ We will adopt a controlled extensibility model:
 3. Role changes must preserve backward compatibility for existing role values.
 4. Authorization checks must map roles through explicit permission matrix, not implicit ordinal comparison.
 5. Self-elevation remains forbidden regardless of role additions.
+6. Platform-scope privileged actors are modeled separately from TenantRole.
+7. If the project adopts a `Superadmin` baseline, it must be expressed as `PlatformRole`, not as a fifth tenant-scoped role.
+8. Platform-scope privilege does not imply implicit `Owner` or `Admin` rights in every Tenant.
 
 ## Alternatives Considered
 
@@ -58,6 +61,7 @@ Positive:
 Constraints:
 - New roles require ADR + contract migration.
 - Permission matrix maintenance becomes mandatory.
+- Platform-scope authorization must be documented separately from tenant-role evolution.
 
 ## Rationale
 
@@ -69,6 +73,7 @@ Decision is validated when:
 - Contract tests enforce allowed baseline role values.
 - Authorization tests use explicit role-to-permission mapping.
 - Any role change PR includes ADR and compatibility evidence.
+- Governance artifacts distinguish tenant-role evolution from platform-role governance.
 
 ## References
 

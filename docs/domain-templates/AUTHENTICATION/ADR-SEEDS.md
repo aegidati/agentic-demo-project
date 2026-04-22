@@ -96,6 +96,8 @@ Options to consider:
 
 Decision point: Ensure at minimum that authentication failures and token validation failures are captured and retainable for security incident analysis.
 
+Security note: include privileged resolution attempts in structured security logs while avoiding raw token persistence or full-claim dumps.
+
 ## Tenant Context From Token Claims
 
 Question: Should the IdentityToken carry a tenant hint, and if so, how is it used?
@@ -107,3 +109,39 @@ Options to consider:
 - Hybrid: tenantHint used only when the User belongs to a single tenant, explicit selection otherwise
 
 Decision point: Align with the Tenant Context Resolution Strategy ADR from the IDENTITY-ACCESS domain (AGENTIC-IAM). Do not duplicate the authorization model inside token claims.
+
+## Platform Superadmin Resolution From Verified Signals
+
+Question: How should verified role/group signals from IdentityToken claims participate in platform-scope privileged resolution?
+
+Options to consider:
+
+- External-signal-only model: normalize verified claims/groups into provider-agnostic signals and delegate final decision to IAM
+- Provider-direct grant model: provider claims directly grant privileged roles (not recommended)
+- Hybrid model: provider claims suggest privileged candidates, IAM confirms through governance constraints
+
+Decision point: Preserve IAM ownership of final platform-role resolution and align with [ADR-008-PLATFORM-SUPERADMIN-BOUNDARY.md](../../adr/ADR-008-PLATFORM-SUPERADMIN-BOUNDARY.md).
+
+## Missing Or Incomplete Privileged Signals
+
+Question: What should happen when privileged role/group signals are missing, malformed, stale, or ambiguous?
+
+Options to consider:
+
+- Fail-closed for privileged actions (recommended baseline)
+- Degrade to non-privileged tenant-scoped flow
+- Allow temporary privileged fallback (not recommended unless formally governed)
+
+Decision point: Define deterministic failure semantics that prevent implicit elevation and document audit requirements for privileged-resolution failures.
+
+## Security Logging For Privileged Resolution
+
+Question: Which privileged-resolution events should be logged for security operations and audits?
+
+Options to consider:
+
+- Log normalized-signal intake, IAM decision, and denial reason
+- Log only success decisions
+- Log provider claim payloads in full (not recommended)
+
+Decision point: Ensure auditability of privileged-resolution paths while minimizing sensitive token/claim exposure in logs.

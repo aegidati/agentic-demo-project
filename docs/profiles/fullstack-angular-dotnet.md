@@ -95,3 +95,5 @@ Angular and Flutter both produce the same bearer token format accepted by the .N
 - Tenant context resolved by `TenantContextMiddleware` using IDENTITY-ACCESS domain
 - `TenantMembership.status === Active` enforced before any tenanted operation
 - `Permission` evaluation performed in the Application layer, not in the controller
+
+Guardrail: verified claims/groups from both client paths are external signals only and do not directly grant platform-scope privilege. Final privileged resolution remains IAM-owned per [ADR-008-PLATFORM-SUPERADMIN-BOUNDARY.md](../adr/ADR-008-PLATFORM-SUPERADMIN-BOUNDARY.md).

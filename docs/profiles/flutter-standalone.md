@@ -7,6 +7,8 @@ Stack: Flutter Mobile Client (standalone, no backend)
 
 This recipe describes the recommended authentication architecture for projects using the flutter-standalone profile. The application is a Flutter mobile application running on iOS and/or Android with no backend service dependency. Authentication uses a native mobile SDK with local state management only.
 
+Important boundary: without a backend IAM boundary, this profile can only perform local feature gating. It must not treat provider claims/groups as authoritative platform-level privileged grants.
+
 ## Recommended AuthProvider
 
 Auth0 via Auth0 Flutter SDK (`auth0_flutter`).
@@ -66,6 +68,8 @@ User logs in → Auth0 returns ID token + custom claims (e.g., `roles`: [admin, 
 → Feature gates unlock based on local evaluation
 ```
 
+This local evaluation is not equivalent to IAM-governed platform authorization. In particular, it must not be used as authoritative Superadmin resolution.
+
 ## Client Scaffolding Hints
 
 ```
@@ -113,3 +117,5 @@ The standalone app is fully responsible for:
 - Validating token expiry before displaying sensitive features (optional: can be lenient for UX)
 - Handling token refresh gracefully
 - Implementing proper logout to clear local state
+
+Guardrail: platform-scope privileged decisions (including Superadmin baseline) remain IAM-owned by definition in this ecosystem. A standalone client can provide local UX hints only, not authoritative privileged governance.

@@ -118,3 +118,5 @@ After `Microsoft.Identity.Web` validates the token:
 - Tenant context resolved per IDENTITY-ACCESS rules
 - `ICurrentUserService` provides a clean abstraction over `HttpContext.User` for domain use
 - `TenantMembership.status` must be `Active` before responding to any tenanted request
+
+Guardrail: app roles/claims are treated as verified external signals and must not be interpreted as direct platform-level grants. Final privileged resolution remains IAM-owned per [ADR-008-PLATFORM-SUPERADMIN-BOUNDARY.md](../adr/ADR-008-PLATFORM-SUPERADMIN-BOUNDARY.md).

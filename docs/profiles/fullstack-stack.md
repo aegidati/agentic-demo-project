@@ -82,3 +82,5 @@ Both clients resolve identity and tenant context through the same backend:
 - `X-Tenant-Context` header → tenant context candidate
 - Backend validates `TenantMembership.status === Active` before evaluating permissions
 - Same `Permission` evaluation logic regardless of client origin
+
+Guardrail: verified claims/groups from either client may inform IAM evaluation as external signals, but neither client path grants platform-scope privilege directly. Final privileged resolution remains IAM-owned per [ADR-008-PLATFORM-SUPERADMIN-BOUNDARY.md](../adr/ADR-008-PLATFORM-SUPERADMIN-BOUNDARY.md).

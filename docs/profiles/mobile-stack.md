@@ -92,4 +92,6 @@ After backend validates the IdentityToken:
 - `TenantMembership.status` must be `Active`
 - `TenantMembership.role` determines permission scope
 
+Guardrail: claims/groups from the provider are external verified signals only. They are not authoritative platform-level grants; final privileged resolution remains IAM-owned per [ADR-008-PLATFORM-SUPERADMIN-BOUNDARY.md](../adr/ADR-008-PLATFORM-SUPERADMIN-BOUNDARY.md).
+
 Mobile clients sending tenant-scoped requests should include `X-Tenant-Context: <tenantId>` header when the User belongs to more than one tenant.

@@ -33,7 +33,11 @@ The token validation algorithm is identical across all profiles:
 3. Check token expiry, audience, and issuer.
 4. Extract TokenClaims.subject.
 5. Resolve User entity from subject.
-6. Initiate tenant context resolution (IDENTITY-ACCESS domain).
-7. Evaluate Permission for User-Tenant pair.
+6. Normalize any verified external role/group signals into a provider-agnostic form.
+7. Delegate platform-role resolution to the IDENTITY-ACCESS domain.
+8. Initiate tenant context resolution (IDENTITY-ACCESS domain).
+9. Evaluate Permission for User-Tenant pair.
 
 Only the token source and the refresh mechanism differ across profiles.
+
+Guardrail: clients and authentication middleware must not make the final Superadmin decision locally. Platform-scope privileged resolution remains IAM-owned and aligned with [ADR-008-PLATFORM-SUPERADMIN-BOUNDARY.md](../adr/ADR-008-PLATFORM-SUPERADMIN-BOUNDARY.md).

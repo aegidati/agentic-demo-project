@@ -52,6 +52,11 @@ All follow-up actions from FEAT-0001 closure have been formally classified and t
 - See 06-FOLLOW-UP-DISPOSITION.md for complete tracking table, owner assignments, and due dates.
 - Next feature (FEAT-0003 or FEAT-AUTH) should prioritize authentication ADR decisions.
 
+## Post-Closure Modifications
+
+- [MOD-01-SUPERADMIN-BOOTSTRAP-ALIGNMENT.md](./MOD-01-SUPERADMIN-BOOTSTRAP-ALIGNMENT.md) records the derived-project bootstrap alignment for Superadmin baseline checks.
+- [ADR-008-PLATFORM-SUPERADMIN-BOUNDARY.md](../../adr/ADR-008-PLATFORM-SUPERADMIN-BOUNDARY.md) now constrains future bootstrap review whenever IAM/Auth foundation adoption is evaluated.
+
 ## Sign-Off
 - Feature closure recorded by: Feature Orchestrator workflow execution.
 - Date: 2026-04-21.

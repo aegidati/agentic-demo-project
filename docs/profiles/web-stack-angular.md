@@ -85,3 +85,5 @@ After backend validates the IdentityToken:
 - Tenant context resolved per IDENTITY-ACCESS rules
 - `TenantMembership.status` must be `Active`
 - `TenantMembership.role` determines permission scope
+
+Guardrail: provider claims/groups are verified external signals only. They do not directly grant platform-scope privilege, and final privileged resolution remains IAM-owned per [ADR-008-PLATFORM-SUPERADMIN-BOUNDARY.md](../adr/ADR-008-PLATFORM-SUPERADMIN-BOUNDARY.md).

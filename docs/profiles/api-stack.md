@@ -84,6 +84,9 @@ In addition to the shared ADR seeds in AUTHENTICATION/ADR-SEEDS.md, resolve thes
 
 For service-to-service calls the IDENTITY-ACCESS model may be simplified:
 
-- Service principals may bypass per-tenant membership checks if they hold elevated platform-level permissions.
+- Verified claims or groups may be normalized as external signals for platform-level role resolution under IAM policy.
 - Any service-to-service call touching tenant-scoped data must still enforce tenant isolation.
+- Platform-level privileges do not implicitly create TenantMembership or TenantRole in any Tenant.
 - Document the authorization model for machine callers explicitly in a project ADR.
+
+Guardrail: claims/groups from the provider are not direct privileged grants. Final platform-scope resolution remains IAM-owned and aligned with [ADR-008-PLATFORM-SUPERADMIN-BOUNDARY.md](../adr/ADR-008-PLATFORM-SUPERADMIN-BOUNDARY.md).

@@ -207,7 +207,7 @@ Adopt AGENTIC-IAM as an optional foundation starter using manual copy or subtree
 Prompt To Run In Copilot Chat (02b):
 
 ```text
-@starter-installer Adopt agentic-iam as an optional foundation starter using manual copy or subtree-vendor (docs + governance artifacts). Do not run scripts/install-starters.ps1 for this step. Do not install it into runtime canonical paths (app/backend, app/web, app/client, app/contracts, app/infra, app/composition). Use an explicit IAM repository URL (or explicit owner/repo), do not infer owner from origin. If IAM repository is missing or inaccessible, mark status as deferred (not failed). Report adopted files, collisions, and unresolved decisions.
+@starter-installer Adopt agentic-iam as an optional foundation starter using manual copy or subtree-vendor (docs + governance artifacts). Do not run scripts/install-starters.ps1 for this step. Do not install it into runtime canonical paths (app/backend, app/web, app/client, app/contracts, app/infra, app/composition). Use an explicit IAM repository URL (or explicit owner/repo), do not infer owner from origin. If IAM repository is missing or inaccessible, mark status as deferred (not failed). Report adopted files, collisions, unresolved decisions, and whether the adopted IAM baseline documents Superadmin as a platform-scope role separate from TenantRole with IAM-owned privileged resolution.
 ```
 
 Additional Done Criteria (02b):
@@ -216,12 +216,16 @@ Additional Done Criteria (02b):
 3. Foundation collisions are reported without destructive overwrite.
 4. IAM repository source is explicit (full URL or explicit owner/repo), never inferred implicitly.
 5. If IAM repository is unavailable, final status is `deferred` with rationale and next action.
+6. If IAM foundation is adopted, output confirms that `Superadmin` is documented as a platform-scope baseline separate from `TenantRole`.
+7. If IAM foundation is adopted, output confirms that privileged role resolution remains owned by IAM governance rather than runtime starter installation.
 
 Stop if (02b):
 - IAM is placed into a runtime canonical slot.
 - Foundation collisions are unresolved.
 - Adoption status is ambiguous.
 - IAM repository source is implicit (owner/repo inferred automatically).
+- Superadmin baseline is in scope but neither documented nor explicitly deferred.
+- Superadmin is described as a `TenantRole` or as implicit tenant-wide ownership.
 
 ### 02c - Optional Authentication Foundation Adoption
 
@@ -240,7 +244,7 @@ Step 02b (AGENTIC-IAM adoption) must be completed before this step.
 Prompt To Run In Copilot Chat (02c):
 
 ```text
-@starter-installer Adopt agentic-auth-foundation as an optional foundation starter using manual copy or subtree-vendor (docs + governance artifacts). Confirm agentic-iam is already adopted. Resolve the profile recipe from `docs/profiles/` by first checking whether `docs/profiles/<project.profile>.md` exists before reading it. If the matching file does not exist, do not fail the step: use the closest available profile recipe as reference, record the mapping rationale, and mark the profile recipe item as explicitly deferred (partial deferral). Do not run scripts/install-starters.ps1 for this step. Do not install it into runtime canonical paths: app/backend, app/web, app/client, app/contracts, app/infra, app/composition. Use an explicit auth-foundation repository URL (or explicit owner/repo), do not infer owner from origin. If auth-foundation repository is missing or inaccessible, mark status as deferred (not failed). Report adopted files, collisions, resolved or deferred recipe mapping, and unresolved ADR seeds.
+@starter-installer Adopt agentic-auth-foundation as an optional foundation starter using manual copy or subtree-vendor (docs + governance artifacts). Confirm agentic-iam is already adopted. Resolve the profile recipe from `docs/profiles/` by first checking whether `docs/profiles/<project.profile>.md` exists before reading it. If the matching file does not exist, do not fail the step: use the closest available profile recipe as reference, record the mapping rationale, and mark the profile recipe item as explicitly deferred (partial deferral). Do not run scripts/install-starters.ps1 for this step. Do not install it into runtime canonical paths: app/backend, app/web, app/client, app/contracts, app/infra, app/composition. Use an explicit auth-foundation repository URL (or explicit owner/repo), do not infer owner from origin. If auth-foundation repository is missing or inaccessible, mark status as deferred (not failed). Report adopted files, collisions, resolved or deferred recipe mapping, unresolved ADR seeds, and whether verified claims/groups are documented only as provider-agnostic signals aligned with IAM-owned privileged resolution for the Superadmin baseline.
 ```
 
 Additional Done Criteria (02c):
@@ -252,6 +256,8 @@ Additional Done Criteria (02c):
 6. If auth-foundation repository is unavailable, final status is `deferred` with rationale and next action.
 7. If `docs/profiles/<project.profile>.md` is missing, output includes the fallback recipe used (if any), mapping rationale, and explicit partial deferral.
 8. Output includes promoted ADR seeds or explicit deferrals with rationale.
+9. If Authentication foundation is adopted, output confirms that verified claims/groups are treated as provider-agnostic external signals and not as direct Superadmin grants.
+10. If Authentication foundation is adopted, output confirms alignment with IAM-owned privileged resolution for platform-scope access.
 
 Stop if (02c):
 - AGENTIC-IAM is not already adopted.
@@ -260,6 +266,8 @@ Stop if (02c):
 - ADR seeds are neither promoted nor explicitly deferred.
 - Adoption status is ambiguous.
 - Auth foundation repository source is implicit (owner/repo inferred automatically).
+- Authentication foundation text assigns Superadmin directly from provider-specific claims or groups.
+- Authentication foundation output conflicts with the IAM baseline on platform-scope privileged resolution.
 
 ### 03 - Architecture ADR 001
 
@@ -444,6 +452,8 @@ Copy-paste chat text:
 
 Also validate ADR index consistency: scan docs/adr/ for concrete ADR-*.md files (excluding ADR-TEMPLATE.md and ADR-INDEX.md itself), then verify that each file is registered in docs/adr/ADR-INDEX.md with matching ID, title, status, date, and link. Report the following checklist:
 
+If IAM and/or Authentication foundations are in scope, also validate Superadmin baseline coherence: platform-scope baseline documented separately from TenantRole, no foundation text implying implicit tenant-wide ownership, provider-agnostic signal normalization in Authentication guidance, and IAM-owned privileged resolution for platform-scope access.
+
 ADR Index Consistency Checklist:
 - [ ] All concrete ADR files are present in the index table
 - [ ] No index row has placeholder status (_Template_) for an existing concrete ADR
@@ -471,6 +481,7 @@ Start real feature development only after a READY outcome.
 7. Final gate is READY, or blockers are clearly documented.
 8. If IAM is in scope, AGENTIC-IAM is either adopted via manual model or explicitly deferred with rationale.
 9. If Authentication is in scope, AGENTIC-AUTH-FOUNDATION is either adopted via step 02c or explicitly deferred with rationale.
+10. If IAM and/or Authentication foundations are in scope, Superadmin baseline coherence is explicitly documented or explicitly deferred with rationale.
 
 ## What to Do After Bootstrap
 

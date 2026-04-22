@@ -170,6 +170,11 @@
 - ADR alignment checks for ADR-001 through ADR-007 are supported by plan/log evidence and targeted code spot-checks.
 - Review artifact `04-REVIEW.md` is now created.
 
+## Post-Closure Modification Tracking
+
+- `MOD-01-PLATFORM-SUPERADMIN-BASELINE.md` records the documentation-only adoption of the platform-scope Superadmin baseline.
+- ADR alignment for this post-closure modification extends to [ADR-008-PLATFORM-SUPERADMIN-BOUNDARY.md](../../adr/ADR-008-PLATFORM-SUPERADMIN-BOUNDARY.md).
+
 ## Open Risks (Priority)
 1. `High` - DoD governance/sign-off gates are incomplete (REQUEST still Draft, no sign-off evidence, no DONE artifact).
 2. `High` - Coverage threshold evidence required by TEST-STRATEGY is missing.

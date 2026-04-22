@@ -74,10 +74,12 @@ Expected fields:
 Optional fields (provider-dependent):
 
 - `tenantHint`: suggested tenant context, may be used during tenant context resolution
-- `roles`: provider-assigned roles, may supplement or override domain-owned TenantRole
+- `roles`: provider-assigned roles or groups, treated only as verified external signals for downstream authorization mapping
 - `email`: user email, informational only
 
 TokenClaims must be extracted only after signature verification. Raw claims must never be trusted before verification.
+Verified external signals may be forwarded to the IDENTITY-ACCESS domain as inputs to privileged role resolution.
+They must not be interpreted in the Authentication domain as direct grants of TenantRole, Permission, or PlatformRole.
 
 ### RefreshCredential
 
@@ -104,6 +106,7 @@ Significant state changes in the Authentication domain:
 - `TokenRefreshed`: A RefreshCredential was exchanged for a new IdentityToken.
 - `SessionTerminated`: AuthSession ended due to logout, expiration, or revocation.
 - `AuthorizationDenied`: Token was valid but User lacked required Permission in tenant context (links to IDENTITY-ACCESS domain).
+- `PrivilegedSignalNormalized`: Verified provider role/group claims were normalized into provider-agnostic external signals for IAM evaluation.
 
 ## Use Cases
 
@@ -123,10 +126,13 @@ Primary workflows in the Authentication domain:
 |---|---|---|
 | TokenClaims.subject | Resolves to | User.id |
 | TokenClaims.tenantHint | May inform | Tenant context resolution |
+| Verified external role/group signals | Input to | Platform-role resolution under IAM governance |
 | TokenValidated | Precondition for | TenantMembership evaluation |
 | AuthorizationDenied | Produced by | Permission evaluation |
 
 The subject claim in a valid IdentityToken is the bridge between the Authentication domain and the IDENTITY-ACCESS domain. Backend implementations must use this claim to load the User entity before evaluating TenantMembership and Permission.
+
+For platform-scope privilege (including Superadmin baseline), claims or groups alone are never sufficient as direct grants. Final privileged resolution remains IAM-owned and must align with [ADR-008-PLATFORM-SUPERADMIN-BOUNDARY.md](../../adr/ADR-008-PLATFORM-SUPERADMIN-BOUNDARY.md).
 
 ---
 

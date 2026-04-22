@@ -77,6 +77,11 @@ ADR alignment result: PASS
 - Bootstrap outcomes, architecture baseline, and validation evidence are documented.
 - ADR-001 alignment is explicit and verified.
 
+## Post-Closure Modification Tracking
+
+- `MOD-01-SUPERADMIN-BOOTSTRAP-ALIGNMENT.md` records the documentation-only bootstrap alignment for Superadmin baseline checks.
+- The bootstrap review surface now also depends on [ADR-008-PLATFORM-SUPERADMIN-BOUNDARY.md](../../adr/ADR-008-PLATFORM-SUPERADMIN-BOUNDARY.md) when IAM/Auth foundation adoption is in scope.
+
 ## Open Risks (With Priority)
 1. Medium: Follow-up ADR seed promotion for IAM and Authentication remains open.
 2. Medium: Partial deferral for auth profile recipe mapping remains open.

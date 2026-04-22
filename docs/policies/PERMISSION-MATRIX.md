@@ -33,3 +33,23 @@ Legend:
 - Owner is the only baseline role assumed to manage all listed administrative actions without further role restrictions.
 - Admin is intentionally constrained to avoid implicit escalation into ownership governance.
 - Member and Viewer focus on resource access, not tenant governance.
+
+## Platform Authorization Baseline
+
+This section defines a separate baseline for platform-scoped governance. It does not extend the tenant-scoped role matrix above.
+
+| Permission                 | Superadmin |
+|---------------------------|:----------:|
+| platform:tenant:list      | Allow      |
+| platform:tenant:governance| Allow      |
+| platform:shared-data:read | Allow      |
+| platform:shared-data:write| Allow      |
+| platform:superadmin:assign| Conditional|
+| platform:superadmin:revoke| Conditional|
+
+## Platform Constraints
+
+- `Superadmin` is a platform-scope baseline, not a `TenantRole`.
+- Platform privilege does not implicitly grant `Owner`, `Admin`, `Member`, or `Viewer` in any Tenant.
+- Tenant-scoped mutations still require explicit tenant targeting and applicable governance checks.
+- Assignment or revocation of `Superadmin` requires explicit governance workflow and audit evidence.
